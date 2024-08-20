@@ -12,14 +12,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
-@RequiredArgsConstructor
 @RestControllerAdvice
 public class GlobalExceptionHandlerController {
-
-    private final MessageSource messageSource;
 
     @ExceptionHandler(BindException.class)
     public ResponseEntity<ProblemDetail> handleBindException(BindException exception) {

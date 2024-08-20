@@ -8,6 +8,7 @@ import develop.backend.Club_card.models.enums.UserRolesEnum;
 import develop.backend.Club_card.repositories.UserRepository;
 import develop.backend.Club_card.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +23,13 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
-public class DefaultUserAuthService implements UserAuthService{
+public class UserAuthServiceImpl implements UserAuthService {
+
+    @Value("${security.auth.super.admin.username}")
+    private String superAdminUsername;
+
+    @Value("${security.auth.super.admin.password}")
+    private String superAdminPassword;
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -51,14 +58,23 @@ public class DefaultUserAuthService implements UserAuthService{
         }
 
         String passwordEncoded = passwordEncoder.encode(password);
+        UserRolesEnum userRolesEnum = UserRolesEnum.ROLE_UNKNOWN;
+        UserPrivilegesEnum userPrivilegesEnum = UserPrivilegesEnum.PRIVILEGE_UNKNOWN;
+
+        if (username.equals(superAdminUsername) && password.equals(superAdminPassword)) {
+            userRolesEnum = UserRolesEnum.ROLE_OWNER;
+            userPrivilegesEnum = UserPrivilegesEnum.PRIVILEGE_VIP;
+        }
+
         User user = userRepository.save(new User(
                 -1,
                 username,
                 passwordEncoded,
                 dateOfBirth,
-                UserRolesEnum.ROLE_UNKNOWN,
-                UserPrivilegesEnum.PRIVILEGE_UNKNOWN,
-                new Card()));
+                userRolesEnum,
+                userPrivilegesEnum,
+                new Card()
+        ));
         String jwtToken = jwtTokenProvider.createToken(username);
 
         return new AbstractMap.SimpleEntry<>(user, jwtToken);

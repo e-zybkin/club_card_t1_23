@@ -29,9 +29,6 @@ public class Card {
     @Column(name = "cvc")
     private Integer cvcCode;
 
-    @OneToOne(mappedBy = "card")
-    private User user;
-
     @Column(name = "is_blocked")
     private Boolean isBlocked;
 }
