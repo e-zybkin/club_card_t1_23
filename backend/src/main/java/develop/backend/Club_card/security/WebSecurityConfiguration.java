@@ -48,7 +48,8 @@ public class WebSecurityConfiguration {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("auth/**").permitAll()
+                        .requestMatchers("club-card/api/auth/**").permitAll()
+                        .requestMatchers("club-card/api/manager/**").hasAnyRole("OWNER", "MANAGER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
