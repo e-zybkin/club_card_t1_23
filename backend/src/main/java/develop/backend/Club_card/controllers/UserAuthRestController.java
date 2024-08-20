@@ -19,7 +19,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/club-card/api/auth")
 public class UserAuthRestController {
 
     private final UserAuthService userAuthService;
