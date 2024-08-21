@@ -7,5 +7,5 @@ import java.util.Date;
 
 public interface UserAuthService {
     String login(String username, String password);
-    AbstractMap.SimpleEntry<User, String> signup(String username, String password, Date dateOfBirth);
+    AbstractMap.SimpleEntry<User, String> signup(String username, String password, String email);
 }

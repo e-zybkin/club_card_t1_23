@@ -38,7 +38,10 @@ public class UserAuthRestController {
 
         String jwtToken = userAuthService.login(userLogInPayload.username(), userLogInPayload.password());
         return ResponseEntity.ok()
-                .body(Map.of("token", jwtToken));
+                .body(Map.of(
+                        "token", jwtToken,
+                        "username", userLogInPayload.username()
+                ));
     }
 
     @PostMapping("signup")
@@ -56,7 +59,7 @@ public class UserAuthRestController {
         AbstractMap.SimpleEntry<User, String> userToTokenMapping = userAuthService.signup(
                 userSignUpPayload.username(),
                 userSignUpPayload.password(),
-                userSignUpPayload.dateOfBirth()
+                userSignUpPayload.email()
         );
 
         User user = userToTokenMapping.getKey();
@@ -64,8 +67,7 @@ public class UserAuthRestController {
 
         return ResponseEntity.ok().body(Map.of(
                 "username", user.getUsername(),
-                "password", user.getPassword(),
-                "dateOfBirth", user.getDateOfBirth(),
+                "email", user.getEmail(),
                 "token", jwtToken
         ));
     }

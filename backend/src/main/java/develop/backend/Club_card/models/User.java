@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -22,22 +21,33 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(name = "username")
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
-    @Column(name = "date_of_birth", nullable = false)
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Column(name = "middle_name")
+    private String middleName;
+
+    @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "dd.MM.yyyy")
     private Date dateOfBirth;
 
-    @Column(name = "role", nullable = false)
+    @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private UserRolesEnum role;
 
-    @Column(name = "privilege", nullable = false)
+    @Column(name = "privilege")
     @Enumerated(EnumType.STRING)
     private UserPrivilegesEnum privilege;
 
