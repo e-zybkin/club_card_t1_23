@@ -1,6 +1,6 @@
 package develop.backend.Club_card.controllers;
 
-import develop.backend.Club_card.controllers.payload.UserDeletePayload;
+import develop.backend.Club_card.controllers.payload.UserNamePayload;
 import develop.backend.Club_card.controllers.payload.UserUpdatePrivilegePayload;
 import develop.backend.Club_card.controllers.payload.UserUpdateRolePayload;
 import develop.backend.Club_card.models.User;
@@ -42,10 +42,10 @@ public class UserManagerRestController {
 
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @DeleteMapping
-    public ResponseEntity<?> deleteUser(@Valid @RequestBody UserDeletePayload userDeletePayload,
+    public ResponseEntity<?> deleteUser(@Valid @RequestBody UserNamePayload userNamePayload,
                                         @AuthenticationPrincipal UserDetails managerDetails
     ) {
-        managerService.deleteUser(userDeletePayload.username(), managerDetails);
+        managerService.deleteUser(userNamePayload.username(), managerDetails);
         return ResponseEntity.noContent().build();
     }
 
