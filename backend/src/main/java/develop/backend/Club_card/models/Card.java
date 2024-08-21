@@ -21,6 +21,11 @@ public class Card {
     @Column(name = "number")
     private String number;
 
+    @Column(name = "opening_date")
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd.MM.yyyy")
+    private Date openingDate;
+
     @Column(name = "date_of_expiration")
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd.MM.yyyy")
@@ -28,6 +33,9 @@ public class Card {
 
     @Column(name = "cvc")
     private Integer cvcCode;
+
+    @Column(name = "bonuses")
+    private Integer bonuses;
 
     @Column(name = "is_blocked")
     private Boolean isBlocked;

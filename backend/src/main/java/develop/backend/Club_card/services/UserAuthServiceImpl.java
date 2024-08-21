@@ -50,10 +50,16 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    public AbstractMap.SimpleEntry<User, String> signup(String username, String password, Date dateOfBirth) {
+    public AbstractMap.SimpleEntry<User, String> signup(String username, String password, String email) {
         if (userRepository.existsUserByUsername(username)) {
             throw new CustomException(this.messageSource.getMessage(
                     "security.auth.errors.username.already.exists", null, Locale.getDefault()
+            ), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        if (userRepository.existsUserByEmail(email)) {
+            throw new CustomException(this.messageSource.getMessage(
+                    "security.auth.errors.email.already.exists", null, Locale.getDefault()
             ), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
@@ -70,7 +76,11 @@ public class UserAuthServiceImpl implements UserAuthService {
                 -1,
                 username,
                 passwordEncoded,
-                dateOfBirth,
+                email,
+                "",
+                "",
+                "",
+                new Date(),
                 userRolesEnum,
                 userPrivilegesEnum,
                 new Card()
