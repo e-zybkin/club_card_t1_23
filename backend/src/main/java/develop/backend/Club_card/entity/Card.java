@@ -1,4 +1,4 @@
-package develop.backend.Club_card.models;
+package develop.backend.Club_card.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;

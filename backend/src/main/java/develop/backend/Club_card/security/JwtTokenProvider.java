@@ -1,8 +1,8 @@
 package develop.backend.Club_card.security;
 
-import develop.backend.Club_card.exceptions.CustomException;
-import develop.backend.Club_card.models.User;
-import develop.backend.Club_card.repositories.UserRepository;
+import develop.backend.Club_card.exception.CustomException;
+import develop.backend.Club_card.entity.User;
+import develop.backend.Club_card.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;

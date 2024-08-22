@@ -1,4 +1,4 @@
-package develop.backend.Club_card.models.enums;
+package develop.backend.Club_card.entity.enums;
 
 public enum UserPrivilegesEnum {
     PRIVILEGE_UNKNOWN,

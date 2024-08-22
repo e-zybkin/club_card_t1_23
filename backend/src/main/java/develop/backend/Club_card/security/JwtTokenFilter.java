@@ -1,6 +1,6 @@
 package develop.backend.Club_card.security;
 
-import develop.backend.Club_card.exceptions.CustomException;
+import develop.backend.Club_card.exception.CustomException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

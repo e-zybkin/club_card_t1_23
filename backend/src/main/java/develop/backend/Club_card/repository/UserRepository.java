@@ -1,6 +1,6 @@
-package develop.backend.Club_card.repositories;
+package develop.backend.Club_card.repository;
 
-import develop.backend.Club_card.models.User;
+import develop.backend.Club_card.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

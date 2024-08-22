@@ -1,12 +1,12 @@
-package develop.backend.Club_card.services;
+package develop.backend.Club_card.service;
 
-import develop.backend.Club_card.exceptions.CustomException;
-import develop.backend.Club_card.models.User;
-import develop.backend.Club_card.models.enums.UserPrivilegesEnum;
-import develop.backend.Club_card.models.enums.UserRolesEnum;
-import develop.backend.Club_card.repositories.UserRepository;
+import develop.backend.Club_card.exception.CustomException;
+import develop.backend.Club_card.entity.User;
+import develop.backend.Club_card.entity.enums.UserPrivilegesEnum;
+import develop.backend.Club_card.entity.enums.UserRolesEnum;
+import develop.backend.Club_card.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,12 +18,11 @@ import java.util.Locale;
 import java.util.Optional;
 
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ManagerServiceImpl implements ManagerService {
 
-    protected final UserRepository userRepository;
-    protected final MessageSource messageSource;
+    private final UserRepository userRepository;
+    private final MessageSource messageSource;
 
     @Override
     public List<User> findAllUsers() {
