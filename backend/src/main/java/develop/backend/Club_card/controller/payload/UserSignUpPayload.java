@@ -1,4 +1,4 @@
-package develop.backend.Club_card.controllers.payload;
+package develop.backend.Club_card.controller.payload;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

@@ -1,6 +1,6 @@
-package develop.backend.Club_card.services;
+package develop.backend.Club_card.service;
 
-import develop.backend.Club_card.models.User;
+import develop.backend.Club_card.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;

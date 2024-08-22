@@ -1,11 +1,11 @@
-package develop.backend.Club_card.services;
+package develop.backend.Club_card.service;
 
-import develop.backend.Club_card.exceptions.CustomException;
-import develop.backend.Club_card.models.Card;
-import develop.backend.Club_card.models.User;
-import develop.backend.Club_card.models.enums.UserPrivilegesEnum;
-import develop.backend.Club_card.models.enums.UserRolesEnum;
-import develop.backend.Club_card.repositories.UserRepository;
+import develop.backend.Club_card.exception.CustomException;
+import develop.backend.Club_card.entity.Card;
+import develop.backend.Club_card.entity.User;
+import develop.backend.Club_card.entity.enums.UserPrivilegesEnum;
+import develop.backend.Club_card.entity.enums.UserRolesEnum;
+import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +17,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.AbstractMap;
 import java.util.Date;
 import java.util.Locale;
 
@@ -50,7 +49,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    public AbstractMap.SimpleEntry<User, String> signup(String username, String password, String email) {
+    public User signup(String username, String password, String email) {
         if (userRepository.existsUserByUsername(username)) {
             throw new CustomException(this.messageSource.getMessage(
                     "security.auth.errors.username.already.exists", null, Locale.getDefault()
@@ -85,8 +84,7 @@ public class UserAuthServiceImpl implements UserAuthService {
                 userPrivilegesEnum,
                 new Card()
         ));
-        String jwtToken = jwtTokenProvider.createToken(username);
 
-        return new AbstractMap.SimpleEntry<>(user, jwtToken);
+        return user;
     }
 }

@@ -1,7 +1,7 @@
-package develop.backend.Club_card.services;
+package develop.backend.Club_card.service;
 
-import develop.backend.Club_card.controllers.payload.UserUpdatePayload;
-import develop.backend.Club_card.models.User;
+import develop.backend.Club_card.controller.payload.UserUpdatePayload;
+import develop.backend.Club_card.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserService {
