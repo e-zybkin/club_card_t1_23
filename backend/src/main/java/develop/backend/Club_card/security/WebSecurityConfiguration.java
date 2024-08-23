@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -69,6 +70,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("club-card/api/manager/**").hasAnyRole("OWNER", "MANAGER")
+                        .requestMatchers(HttpMethod.POST,"club-card/api/qr/generate").hasAnyRole("OWNER","MANAGER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
