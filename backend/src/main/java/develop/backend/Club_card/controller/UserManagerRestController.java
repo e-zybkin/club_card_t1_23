@@ -1,6 +1,6 @@
 package develop.backend.Club_card.controller;
 
-import develop.backend.Club_card.controller.payload.UserDeletePayload;
+import develop.backend.Club_card.controller.payload.UserNamePayload;
 import develop.backend.Club_card.controller.payload.UserUpdatePrivilegePayload;
 import develop.backend.Club_card.controller.payload.UserUpdateRolePayload;
 import develop.backend.Club_card.entity.User;
@@ -100,7 +100,7 @@ public class UserManagerRestController {
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @DeleteMapping
     public ResponseEntity<?> deleteUser(
-            @Valid @RequestBody UserDeletePayload userDeletePayload,
+            @Valid @RequestBody UserNamePayload userNamePayload,
             BindingResult bindingResult,
             @AuthenticationPrincipal UserDetails managerDetails
     ) throws BindException {
@@ -113,7 +113,7 @@ public class UserManagerRestController {
             throw new BindException(bindingResult);
         }
 
-        managerService.deleteUser(userDeletePayload.username(), managerDetails);
+        managerService.deleteUser(userNamePayload.username(), managerDetails);
         return ResponseEntity.noContent().build();
     }
 

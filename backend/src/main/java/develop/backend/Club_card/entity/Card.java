@@ -18,8 +18,12 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     @Column(name = "number")
-    private String number;
+    private Long number;
 
     @Column(name = "opening_date")
     @Temporal(TemporalType.DATE)
@@ -34,8 +38,8 @@ public class Card {
     @Column(name = "cvc")
     private Integer cvcCode;
 
-    @Column(name = "bonuses")
-    private Integer bonuses;
+    @Column(name = "score")
+    private Integer score;
 
     @Column(name = "is_blocked")
     private Boolean isBlocked;
