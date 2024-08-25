@@ -1,4 +1,4 @@
-package develop.backend.Club_card.service;
+package develop.backend.Club_card.service.impl;
 
 import develop.backend.Club_card.entity.Card;
 import develop.backend.Club_card.entity.User;

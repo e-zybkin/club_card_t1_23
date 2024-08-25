@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "person")
+@Table(name = "app_user")
 public class User {
 
     @Id
@@ -21,37 +21,44 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true, nullable = false)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "middle_name")
+    @Column(name = "middle_name", nullable = false)
     private String middleName;
 
-    @Column(name = "date_of_birth")
+    @Column(name = "date_of_birth", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(name = "role")
+    @Column(name = "is_pending_deletion", nullable = false)
+    private Boolean isPendingDeletion;
+
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRolesEnum role;
 
-    @Column(name = "privilege")
+    @Column(name = "privilege", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserPrivilegesEnum privilege;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "card_id", referencedColumnName = "id")
     private Card card;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "deletion_request_id", referencedColumnName = "id")
+    private DeletionRequest deletionRequest;
 }
