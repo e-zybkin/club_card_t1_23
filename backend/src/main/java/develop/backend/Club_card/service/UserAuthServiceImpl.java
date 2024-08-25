@@ -42,9 +42,7 @@ public class UserAuthServiceImpl implements UserAuthService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             return jwtTokenProvider.createToken(username);
         } catch (AuthenticationException ex) {
-            throw new CustomException(this.messageSource.getMessage(
-                    "security.auth.errors.invalid.username.or.password", null, Locale.getDefault()
-            ), HttpStatus.UNPROCESSABLE_ENTITY);
+            throw new CustomException(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -63,15 +61,15 @@ public class UserAuthServiceImpl implements UserAuthService {
         }
 
         String passwordEncoded = passwordEncoder.encode(password);
-        UserRolesEnum userRolesEnum = UserRolesEnum.ROLE_UNKNOWN;
-        UserPrivilegesEnum userPrivilegesEnum = UserPrivilegesEnum.PRIVILEGE_UNKNOWN;
+        UserRolesEnum userRolesEnum = UserRolesEnum.ROLE_MEMBER;
+        UserPrivilegesEnum userPrivilegesEnum = UserPrivilegesEnum.PRIVILEGE_STANDARD;
 
         if (username.equals(superAdminUsername) && password.equals(superAdminPassword)) {
             userRolesEnum = UserRolesEnum.ROLE_OWNER;
             userPrivilegesEnum = UserPrivilegesEnum.PRIVILEGE_VIP;
         }
 
-        User user = userRepository.save(new User(
+        return userRepository.save(new User(
                 -1,
                 username,
                 passwordEncoded,
@@ -80,11 +78,10 @@ public class UserAuthServiceImpl implements UserAuthService {
                 "",
                 "",
                 new Date(),
+                false,
                 userRolesEnum,
                 userPrivilegesEnum,
                 new Card()
         ));
-
-        return user;
     }
 }

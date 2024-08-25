@@ -30,6 +30,12 @@ public class CustomUserDetailsService implements UserDetailsService {
             ), HttpStatus.NOT_FOUND);
         }
 
+        if (mayBeUser.get().getIsPendingDeletion()) {
+            throw new CustomException(this.messageSource.getMessage(
+                    "security.auth.errors.user.is.pending.deletion", null, Locale.getDefault()
+            ), HttpStatus.FORBIDDEN);
+        }
+
         return org.springframework.security.core.userdetails.User
                 .withUsername(username)
                 .password(mayBeUser.get().getPassword())

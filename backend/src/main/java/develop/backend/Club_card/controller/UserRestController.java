@@ -62,15 +62,14 @@ public class UserRestController {
     }
 
     @Operation(
-            summary = "Удаление аккаунта текущего пользователя",
-            description =
-                    "В случае успеха - 204 статус. " +
-                    "В Authorization хэдере необходим JWT-токен",
+            summary = "Отправка заявки на удаление учётной записи пользователя",
+            description = "В Authorization хэдере необходим JWT-токен. В случае успеха - 204 статус",
             security = @SecurityRequirement(name = "bearerAuth")
     )
-    @DeleteMapping
-    public ResponseEntity<?> deleteCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        userService.deleteCurrentUser(userDetails);
+    @PostMapping
+    public ResponseEntity<?> makeDeletionRequest(@AuthenticationPrincipal UserDetails userDetails) {
+        userService.makeDeletionRequest(userDetails);
         return ResponseEntity.noContent().build();
     }
+
 }

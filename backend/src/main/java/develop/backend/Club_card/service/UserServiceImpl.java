@@ -1,10 +1,13 @@
 package develop.backend.Club_card.service;
 
 import develop.backend.Club_card.controller.payload.UserUpdatePayload;
+import develop.backend.Club_card.entity.DeletionRequest;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.entity.User;
+import develop.backend.Club_card.repository.DeletionRequestRepository;
 import develop.backend.Club_card.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +20,11 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    @Value("${security.auth.super.admin.username}")
+    private String superAdminUsername;
+
     private final UserRepository userRepository;
+    private final DeletionRequestRepository deletionRequestRepository;
     private final MessageSource messageSource;
 
     @Override
@@ -30,17 +37,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteCurrentUser(UserDetails userDetails) {
-        userRepository.deleteUserByUsername(userDetails.getUsername());
+    public void makeDeletionRequest(UserDetails userDetails) {
+        if (userDetails.getUsername().equals(superAdminUsername)) {
+            throw new CustomException(this.messageSource.getMessage(
+                    "delete.errors.deletion.request.from.super.admin", null, Locale.getDefault()
+            ), HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+        User user = this.getCurrentUser(userDetails);
+        user.setIsPendingDeletion(true);
+        userRepository.save(user);
+
+        deletionRequestRepository.save(new DeletionRequest(
+                -1,
+                user.getUsername()
+        ));
     }
 
     @Override
     @Transactional
     public void updateCurrentUserData(UserDetails userDetails, UserUpdatePayload userUpdatePayload) {
-        User user = userRepository.findUserByUsername(userDetails.getUsername())
-                .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
-                        "security.auth.errors.username.not.found", null, Locale.getDefault()
-                ), HttpStatus.NOT_FOUND));
+        User user = this.getCurrentUser(userDetails);
 
         String newUsername = userUpdatePayload.username();
         String newEmail = userUpdatePayload.email();

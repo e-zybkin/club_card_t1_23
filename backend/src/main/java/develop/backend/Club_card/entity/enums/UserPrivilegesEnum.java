@@ -1,7 +1,6 @@
 package develop.backend.Club_card.entity.enums;
 
 public enum UserPrivilegesEnum {
-    PRIVILEGE_UNKNOWN,
     PRIVILEGE_STANDARD,
     PRIVILEGE_HIGH,
     PRIVILEGE_VIP;

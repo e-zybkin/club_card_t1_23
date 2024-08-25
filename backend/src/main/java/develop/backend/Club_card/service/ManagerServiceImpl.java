@@ -1,27 +1,30 @@
 package develop.backend.Club_card.service;
 
+import develop.backend.Club_card.entity.ArchivedUser;
+import develop.backend.Club_card.entity.DeletionRequest;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.entity.enums.UserPrivilegesEnum;
 import develop.backend.Club_card.entity.enums.UserRolesEnum;
+import develop.backend.Club_card.repository.ArchivedUserRepository;
+import develop.backend.Club_card.repository.DeletionRequestRepository;
 import develop.backend.Club_card.repository.UserRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class ManagerServiceImpl implements ManagerService {
 
     private final UserRepository userRepository;
+    private final DeletionRequestRepository deletionRequestRepository;
+    private final ArchivedUserRepository archivedUserRepository;
     private final MessageSource messageSource;
 
     @Override
@@ -30,22 +33,58 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
+    public List<DeletionRequest> findAllDeletionRequests() {
+        return deletionRequestRepository.findAll();
+    }
+
+    @Override
+    public List<ArchivedUser> findAllArchivedUsers() {
+        return archivedUserRepository.findAll();
+    }
+
+    @Override
     @Transactional
-    public void deleteUser(String username, UserDetails managerDetails) {
-        String managerRole = managerDetails.getAuthorities().toArray()[0].toString();
-        Optional<User> mayBeUser = userRepository.findUserByUsername(username);
+    public void moveUserToArchive(String username) {
+        DeletionRequest deletionRequest = deletionRequestRepository.findByUsername(username)
+                .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
+                        "delete.errors.deletion.request.does.not.exits", null, Locale.getDefault()
+                ), HttpStatus.NOT_FOUND));
 
-        if (mayBeUser.isPresent()) {
-            String userRole = mayBeUser.get().getRole().getRoleInString();
+        User user = userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
+                        "security.auth.errors.username.not.found", null, Locale.getDefault()
+                ), HttpStatus.NOT_FOUND));
 
-            if (userRole.equals(managerRole) || (managerRole.equals("ROLE_MANAGER") && userRole.equals("ROLE_OWNER"))) {
-                throw new CustomException(this.messageSource.getMessage(
-                        "security.manager.errors.delete.user.with.inappropriate.role", null, Locale.getDefault()
-                ), HttpStatus.UNPROCESSABLE_ENTITY);
-            }
+        String password = user.getPassword();
+        String email = user.getEmail();
+        UserRolesEnum role = user.getRole();
+        UserPrivilegesEnum privilege = user.getPrivilege();
+
+        deletionRequestRepository.delete(deletionRequest);
+        userRepository.delete(user);
+
+        if (archivedUserRepository.existsArchivedUserByUsername(username)) {
+            archivedUserRepository.deleteArchivedUserByUsername(username);
         }
 
-        userRepository.deleteUserByUsername(username);
+        if (archivedUserRepository.existsArchivedUserByEmail(email)) {
+            archivedUserRepository.deleteArchivedUserByEmail(email);
+        }
+
+        archivedUserRepository.save(new ArchivedUser(
+                -1,
+                username,
+                password,
+                email,
+                role,
+                privilege
+        ));
+    }
+
+    @Override
+    @Transactional
+    public void deleteUserFromArchive(String username) {
+        archivedUserRepository.deleteArchivedUserByUsername(username);
     }
 
     @Override
@@ -54,7 +93,9 @@ public class ManagerServiceImpl implements ManagerService {
         UserRolesEnum newRole = switch (role) {
             case "ROLE_MANAGER" -> UserRolesEnum.ROLE_MANAGER;
             case "ROLE_MEMBER" -> UserRolesEnum.ROLE_MEMBER;
-            default -> UserRolesEnum.ROLE_UNKNOWN;
+            default -> throw new CustomException(this.messageSource.getMessage(
+                    "validation.errors.role.does.not.exist", null, Locale.getDefault()
+            ), HttpStatus.UNPROCESSABLE_ENTITY);
         };
 
         userRepository.findUserByUsername(username).ifPresentOrElse(
@@ -77,7 +118,9 @@ public class ManagerServiceImpl implements ManagerService {
             case "PRIVILEGE_STANDARD" -> UserPrivilegesEnum.PRIVILEGE_STANDARD;
             case "PRIVILEGE_HIGH" -> UserPrivilegesEnum.PRIVILEGE_HIGH;
             case "PRIVILEGE_VIP" -> UserPrivilegesEnum.PRIVILEGE_VIP;
-            default -> UserPrivilegesEnum.PRIVILEGE_UNKNOWN;
+            default -> throw new CustomException(this.messageSource.getMessage(
+                    "validation.errors.privilege.does.not.exist", null, Locale.getDefault()
+            ), HttpStatus.UNPROCESSABLE_ENTITY);
         };
 
         userRepository.findUserByUsername(username).ifPresentOrElse(

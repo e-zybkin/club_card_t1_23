@@ -3,6 +3,7 @@ package develop.backend.Club_card.controller;
 import develop.backend.Club_card.controller.payload.UserNamePayload;
 import develop.backend.Club_card.controller.payload.UserUpdatePrivilegePayload;
 import develop.backend.Club_card.controller.payload.UserUpdateRolePayload;
+import develop.backend.Club_card.entity.DeletionRequest;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.service.ManagerService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,8 +13,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -90,19 +89,44 @@ public class UserManagerRestController {
     }
 
     @Operation(
-            summary = "Удаление пользователя по имени",
+            summary = "Получение списка всех пользователей",
             description =
                     "Данная ручка может быть вызвана суперадином (\"ROLE_OWNER\") или менеджером (\"ROLE_OWNER\"). " +
-                    "В Authorization хэдере необходим JWT-токен. " +
-                    "В теле указывается имя пользователя. В случае успеха - 204 ответ. ",
+                    "В Authorization хэдере необходим JWT-токен. ",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
-    @DeleteMapping
-    public ResponseEntity<?> deleteUser(
+    @GetMapping("get/users")
+    public List<User> findAllUsers() {
+        return this.managerService.findAllUsers();
+    }
+
+    @Operation(
+            summary = "Получение списка заявок на удаление учётной записи",
+            description = "Возвращает JSON со списком заявок на удаление"
+    )
+    @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
+    @GetMapping("get/deletion-requests")
+    public List<DeletionRequest> findAllDeletionRequests() {
+        return managerService.findAllDeletionRequests();
+    }
+
+    @Operation(
+            summary = "Перемещение пользователя в архив",
+            description =
+                    "Перемещает пользователя, оствавившего заявку на удаление " +
+                    "учётной записи в архив, при этом если в архиве уже лежит запись с совпадающим " +
+                    "email или паролем для удаляемого пользователя, то из архива предварительно удаляются " +
+                    "подобные записи. Данная ручка может быть вызвана суперадином (\"ROLE_OWNER\") или " +
+                    " менеджером (\"ROLE_OWNER\"). Принимает JSON с именем пользователя. В Authorization хэдере" +
+                    " необходим JWT-токен. В случае успеха - 204 статус.",
+            security = @SecurityRequirement(name = "bearerAuth")
+    )
+    @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
+    @PostMapping
+    public ResponseEntity<?> moveUserToArchive(
             @Valid @RequestBody UserNamePayload userNamePayload,
-            BindingResult bindingResult,
-            @AuthenticationPrincipal UserDetails managerDetails
+            BindingResult bindingResult
     ) throws BindException {
 
         if (bindingResult.hasErrors()) {
@@ -113,20 +137,34 @@ public class UserManagerRestController {
             throw new BindException(bindingResult);
         }
 
-        managerService.deleteUser(userNamePayload.username(), managerDetails);
+        managerService.moveUserToArchive(userNamePayload.username());
         return ResponseEntity.noContent().build();
     }
 
     @Operation(
-            summary = "Получение списка всех пользователей",
-            description =
+            summary = "Удаление пользователя из архива",
+            description = "Удаляет данные архивированного пользователя. " +
                     "Данная ручка может быть вызвана суперадином (\"ROLE_OWNER\") или менеджером (\"ROLE_OWNER\"). " +
-                    "В Authorization хэдере необходим JWT-токен. ",
+                    "В Authorization хэдере необходим JWT-токен. " +
+                    "В случае успеха - 204 статус.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
-    @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
-    @GetMapping
-    public List<User> findAllUsers() {
-        return this.managerService.findAllUsers();
+    @PreAuthorize("hasRole('OWNER')")
+    @DeleteMapping
+    public ResponseEntity<?> deleteUserFromArchive(
+            @Valid @RequestBody UserNamePayload userNamePayload,
+            BindingResult bindingResult
+    ) throws BindException {
+
+        if (bindingResult.hasErrors()) {
+            if (bindingResult instanceof BindException exception) {
+                throw exception;
+            }
+
+            throw new BindException(bindingResult);
+        }
+
+        managerService.deleteUserFromArchive(userNamePayload.username());
+        return ResponseEntity.noContent().build();
     }
 }
