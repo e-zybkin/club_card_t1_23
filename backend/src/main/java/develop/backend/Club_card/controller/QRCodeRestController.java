@@ -5,7 +5,7 @@ import develop.backend.Club_card.controller.payload.UserNamePayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.repository.UserRepository;
-import develop.backend.Club_card.service.QRCodeServiceImpl;
+import develop.backend.Club_card.service.impl.QRCodeServiceImpl;
 import develop.backend.Club_card.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

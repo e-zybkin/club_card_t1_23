@@ -13,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "person")
+@Table(name = "app_user")
 public class User {
 
     @Id
@@ -57,4 +57,8 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "card_id", referencedColumnName = "id")
     private Card card;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "deletion_request_id", referencedColumnName = "id")
+    private DeletionRequest deletionRequest;
 }

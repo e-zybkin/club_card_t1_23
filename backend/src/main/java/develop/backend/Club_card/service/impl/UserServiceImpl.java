@@ -1,4 +1,4 @@
-package develop.backend.Club_card.service;
+package develop.backend.Club_card.service.impl;
 
 import develop.backend.Club_card.controller.payload.UserUpdatePayload;
 import develop.backend.Club_card.entity.DeletionRequest;
@@ -6,6 +6,7 @@ import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.repository.DeletionRequestRepository;
 import develop.backend.Club_card.repository.UserRepository;
+import develop.backend.Club_card.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -39,19 +40,17 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void makeDeletionRequest(UserDetails userDetails) {
         if (userDetails.getUsername().equals(superAdminUsername)) {
-            throw new CustomException(this.messageSource.getMessage(
-                    "delete.errors.deletion.request.from.super.admin", null, Locale.getDefault()
-            ), HttpStatus.UNPROCESSABLE_ENTITY);
+            this.userRepository.deleteUserByUsername(superAdminUsername);
+            return;
         }
 
         User user = this.getCurrentUser(userDetails);
         user.setIsPendingDeletion(true);
-        userRepository.save(user);
 
-        deletionRequestRepository.save(new DeletionRequest(
-                -1,
-                user.getUsername()
-        ));
+        DeletionRequest deletionRequest = new DeletionRequest(-1, user);
+        user.setDeletionRequest(deletionRequest);
+
+        userRepository.save(user);
     }
 
     @Override

@@ -18,13 +18,13 @@ public class ArchivedUser {
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(name = "username", nullable = false)
     private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email",  nullable = false)
     private String email;
 
     @Column(name = "role", nullable = false)

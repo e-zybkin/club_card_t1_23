@@ -1,12 +1,14 @@
-package develop.backend.Club_card.service;
+package develop.backend.Club_card.service.impl;
 
+import develop.backend.Club_card.controller.payload.UserLogInPayload;
+import develop.backend.Club_card.controller.payload.UserSignUpPayload;
 import develop.backend.Club_card.exception.CustomException;
-import develop.backend.Club_card.entity.Card;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.entity.enums.UserPrivilegesEnum;
 import develop.backend.Club_card.entity.enums.UserRolesEnum;
 import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.security.JwtTokenProvider;
+import develop.backend.Club_card.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -37,7 +39,10 @@ public class UserAuthServiceImpl implements UserAuthService {
     private final MessageSource messageSource;
 
     @Override
-    public String login(String username, String password) {
+    public String login(UserLogInPayload userLogInPayload) {
+        String username = userLogInPayload.username();
+        String password = userLogInPayload.password();
+
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             return jwtTokenProvider.createToken(username);
@@ -47,7 +52,11 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    public User signup(String username, String password, String email) {
+    public User signup(UserSignUpPayload userSignUpPayload) {
+        String username = userSignUpPayload.username();
+        String password = userSignUpPayload.password();
+        String email = userSignUpPayload.email();
+
         if (userRepository.existsUserByUsername(username)) {
             throw new CustomException(this.messageSource.getMessage(
                     "security.auth.errors.username.already.exists", null, Locale.getDefault()
@@ -81,7 +90,8 @@ public class UserAuthServiceImpl implements UserAuthService {
                 false,
                 userRolesEnum,
                 userPrivilegesEnum,
-                new Card()
+                null,
+                null
         ));
     }
 }
