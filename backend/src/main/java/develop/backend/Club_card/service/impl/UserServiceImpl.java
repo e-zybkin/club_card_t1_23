@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
     private String superAdminUsername;
 
     private final UserRepository userRepository;
-    private final DeletionRequestRepository deletionRequestRepository;
     private final MessageSource messageSource;
 
     @Override
@@ -81,6 +80,7 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userUpdatePayload.firstName());
         user.setLastName(userUpdatePayload.lastName());
         user.setMiddleName(userUpdatePayload.middleName());
+        user.setIsFullNameUpdated(true);
 
         userRepository.save(user);
     }

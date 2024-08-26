@@ -46,6 +46,9 @@ public class User {
     @Column(name = "is_pending_deletion", nullable = false)
     private Boolean isPendingDeletion;
 
+    @Column(name = "is_full_name_updated", nullable = false)
+    private Boolean isFullNameUpdated;
+
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRolesEnum role;

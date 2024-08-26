@@ -5,6 +5,10 @@ import develop.backend.Club_card.controller.payload.UserSignUpPayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.service.UserAuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +37,13 @@ public class UserAuthRestController {
                     "Выполняет аутентификацию по логину и паролю. " +
                     "В случае успеха возвращает JSON с именем и JWT."
     )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Пользователь аутентифицирован"),
+            @ApiResponse(responseCode = "400", description = "Некорректный формат данных в теле запроса"),
+            @ApiResponse(responseCode = "404", description = "Пользователь с данным логином не найден"),
+            @ApiResponse(responseCode = "403", description = "Пользователь ожидает удаления аккаунта и" +
+                    " не может быть аутентифицирован")
+    })
     @PostMapping("login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLogInPayload userLogInPayload,
                                    BindingResult bindingResult
@@ -57,10 +68,14 @@ public class UserAuthRestController {
 
     @Operation(
             summary = "Регистрация пользователя",
-            description =
-                    "Выполняет регистрацию пользователя по логину, паролю и email. " +
-                    "В случае успеха возвращает JSON с именем пользователя, email и 201 статус."
+            description = "Выполняет регистрацию пользователя по логину, паролю и email."
     )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Пользователь зарегистрирован"),
+            @ApiResponse(responseCode = "400", description = "Некорректный формат данных в теле запроса"),
+            @ApiResponse(responseCode = "422", description = "Пользователь с таким логином и/или email" +
+                    " уже существует")
+    })
     @PostMapping("signup")
     public ResponseEntity<?> signup(
             @Valid @RequestBody UserSignUpPayload userSignUpPayload,

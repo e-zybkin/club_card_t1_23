@@ -46,8 +46,8 @@ public class UserAuthServiceImpl implements UserAuthService {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             return jwtTokenProvider.createToken(username);
-        } catch (AuthenticationException ex) {
-            throw new CustomException(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch (CustomException ex) {
+            throw new CustomException(ex.getMessage(), ex.getHttpStatus());
         }
     }
 
@@ -87,6 +87,7 @@ public class UserAuthServiceImpl implements UserAuthService {
                 "",
                 "",
                 new Date(),
+                false,
                 false,
                 userRolesEnum,
                 userPrivilegesEnum,
