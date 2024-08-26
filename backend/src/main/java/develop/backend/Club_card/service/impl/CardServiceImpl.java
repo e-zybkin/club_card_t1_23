@@ -1,4 +1,4 @@
-package develop.backend.Club_card.service;
+package develop.backend.Club_card.service.impl;
 
 import develop.backend.Club_card.entity.Card;
 import develop.backend.Club_card.entity.User;
@@ -52,6 +52,13 @@ public class CardServiceImpl {
     return card;
 
     }
+
+    public void addScore(Card card, int inc) {
+        card.setScore(card.getScore()+inc);
+        cardRepository.save(card);
+    }
+
+
 
 
     public static String generateHash(String input) {

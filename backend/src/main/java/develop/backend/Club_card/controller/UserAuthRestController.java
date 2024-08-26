@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -45,7 +46,8 @@ public class UserAuthRestController {
             throw new BindException(bindingResult);
         }
 
-        String jwtToken = userAuthService.login(userLogInPayload.username(), userLogInPayload.password());
+        String jwtToken = userAuthService.login(userLogInPayload);
+
         return ResponseEntity.ok()
                 .body(Map.of(
                         "token", jwtToken,
@@ -57,7 +59,7 @@ public class UserAuthRestController {
             summary = "Регистрация пользователя",
             description =
                     "Выполняет регистрацию пользователя по логину, паролю и email. " +
-                    "В случае успеха возвращает JSON с именем пользователя и email."
+                    "В случае успеха возвращает JSON с именем пользователя, email и 201 статус."
     )
     @PostMapping("signup")
     public ResponseEntity<?> signup(
@@ -73,13 +75,9 @@ public class UserAuthRestController {
             throw new BindException(bindingResult);
         }
 
-        User user = userAuthService.signup(
-                userSignUpPayload.username(),
-                userSignUpPayload.password(),
-                userSignUpPayload.email()
-        );
+        User user = userAuthService.signup(userSignUpPayload);
 
-        return ResponseEntity.ok().body(Map.of(
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "username", user.getUsername(),
                 "email", user.getEmail()
         ));

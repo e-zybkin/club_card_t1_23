@@ -1,4 +1,4 @@
-package develop.backend.Club_card.service;
+package develop.backend.Club_card.service.impl;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -6,6 +6,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import develop.backend.Club_card.service.QRCodeService;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
