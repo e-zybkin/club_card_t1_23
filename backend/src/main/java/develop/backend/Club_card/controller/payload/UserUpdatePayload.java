@@ -17,13 +17,13 @@ public record UserUpdatePayload(
         )
         String email,
 
-        @NotNull(message = "{validation.errors.first.name.is.null}")
+        @NotBlank(message = "{validation.errors.first.name.is.blank}")
         String firstName,
 
-        @NotNull(message = "{validation.errors.last.name.is.null}")
+        @NotBlank(message = "{validation.errors.last.name.is.blank}")
         String lastName,
 
-        @NotNull(message = "{validation.errors.middle.name.is.null}")
+        @NotBlank(message = "{validation.errors.middle.name.is.blank}")
         String middleName,
 
         @NotNull(message = "{validation.errors.date.of.birth.is.null}")
