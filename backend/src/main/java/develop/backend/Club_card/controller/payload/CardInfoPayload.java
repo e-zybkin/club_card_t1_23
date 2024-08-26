@@ -7,17 +7,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-public class CardInfoPayload {
+public record CardInfoPayload (
 
-    private Long number;
+    Long number,
 
-    private Date openingDate;
+    Date openingDate,
 
-    private Date dateOfExpiration;
+    Date dateOfExpiration,
 
-    private Integer cvcCode;
+    Integer cvcCode,
 
-    private Integer score;
+    Integer score,
 
-    private Boolean isBlocked;
+    Boolean isBlocked
+){
 }
