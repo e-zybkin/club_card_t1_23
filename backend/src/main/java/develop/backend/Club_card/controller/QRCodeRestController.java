@@ -35,67 +35,67 @@ import java.util.Optional;
 @RequestMapping("/club-card/api/qr")
 public class QRCodeRestController {
 
-    private final UserService userService;
-    private final MessageSource messageSource;
-    private final UserRepository userRepository;
-
-
-    @Operation(
-        summary = "Генерация QR-кода для пользователя",
-        description =
-            "Генерируется QR-код с информацией о пользователе." +
-                "Информация о пользователе берется на основе JWT-токена: кто сделал запрос, того информация и вернулась."
-    )
-    @GetMapping("generate")
-    public ResponseEntity<Map<String, String>> generateQRCode(@AuthenticationPrincipal UserDetails userDetails) {
-
-        User user = userService.getCurrentUser(userDetails);
-
-        try {
-            byte[] qrCodeImage = QRCodeService.generateQRCodeImage(user.toString(), 300, 300);
-            String base64QRCode = Base64.getEncoder().encodeToString(qrCodeImage);
-            return ResponseEntity.ok(Map.of("qrCode", base64QRCode));
-        } catch (WriterException | IOException e) {
-            return ResponseEntity.status(500).body(Map.of("error", "Error generating QR Code: " + e.getMessage()));
-        }
-    }
-
-    @Operation(
-        summary = "Генерация QR-кода по запросу админа",
-        description =
-            "Генерируется QR-код с информацией о пользователе." +
-                "Информация о пользователе берется на основе username, который отправляется с frontend в json." +
-                "Доступно только для админа и суперадмина."
-    )
-    @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
-    @PostMapping("generate")
-    public ResponseEntity<Map<String, String>> generateQRCodeForAdmin(@AuthenticationPrincipal UserDetails userDetails,
-                                                                      @Valid @RequestBody UserNamePayload usernamePayload,
-                                                                      BindingResult bindingResult) throws BindException {
-
-        if (bindingResult.hasErrors()) {
-            if (bindingResult instanceof BindException exception) {
-                throw exception;
-            }
-
-            throw new BindException(bindingResult);
-        }
-
-        Optional<User> mayBeUser = userRepository.findUserByUsername(usernamePayload.username());
-
-        if (mayBeUser.isEmpty()) {
-            throw new CustomException(this.messageSource.getMessage(
-                "security.auth.errors.username.not.found", null, Locale.getDefault()
-            ), HttpStatus.NOT_FOUND);
-        }
-
-
-        try {
-            byte[] qrCodeImage = QRCodeService.generateQRCodeImage(mayBeUser.toString(), 300, 300);
-            String base64QRCode = Base64.getEncoder().encodeToString(qrCodeImage);
-            return ResponseEntity.ok(Map.of("qrCode", base64QRCode));
-        } catch (WriterException | IOException e) {
-            return ResponseEntity.status(500).body(Map.of("error", "Error generating QR Code: " + e.getMessage()));
-        }
-    }
+//    private final UserService userService;
+//    private final MessageSource messageSource;
+//    private final UserRepository userRepository;
+//
+//
+//    @Operation(
+//        summary = "Генерация QR-кода для пользователя",
+//        description =
+//            "Генерируется QR-код с информацией о пользователе." +
+//                "Информация о пользователе берется на основе JWT-токена: кто сделал запрос, того информация и вернулась."
+//    )
+//    @GetMapping("generate")
+//    public ResponseEntity<Map<String, String>> generateQRCode(@AuthenticationPrincipal UserDetails userDetails) {
+//
+//        User user = userService.getCurrentUser(userDetails);
+//
+//        try {
+//            byte[] qrCodeImage = QRCodeService.generateQRCodeImage(user.toString(), 300, 300);
+//            String base64QRCode = Base64.getEncoder().encodeToString(qrCodeImage);
+//            return ResponseEntity.ok(Map.of("qrCode", base64QRCode));
+//        } catch (WriterException | IOException e) {
+//            return ResponseEntity.status(500).body(Map.of("error", "Error generating QR Code: " + e.getMessage()));
+//        }
+//    }
+//
+//    @Operation(
+//        summary = "Генерация QR-кода по запросу админа",
+//        description =
+//            "Генерируется QR-код с информацией о пользователе." +
+//                "Информация о пользователе берется на основе username, который отправляется с frontend в json." +
+//                "Доступно только для админа и суперадмина."
+//    )
+//    @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
+//    @PostMapping("generate")
+//    public ResponseEntity<Map<String, String>> generateQRCodeForAdmin(@AuthenticationPrincipal UserDetails userDetails,
+//                                                                      @Valid @RequestBody UserNamePayload usernamePayload,
+//                                                                      BindingResult bindingResult) throws BindException {
+//
+//        if (bindingResult.hasErrors()) {
+//            if (bindingResult instanceof BindException exception) {
+//                throw exception;
+//            }
+//
+//            throw new BindException(bindingResult);
+//        }
+//
+//        Optional<User> mayBeUser = userRepository.findUserByUsername(usernamePayload.username());
+//
+//        if (mayBeUser.isEmpty()) {
+//            throw new CustomException(this.messageSource.getMessage(
+//                "security.auth.errors.username.not.found", null, Locale.getDefault()
+//            ), HttpStatus.NOT_FOUND);
+//        }
+//
+//
+//        try {
+//            byte[] qrCodeImage = QRCodeService.generateQRCodeImage(mayBeUser.toString(), 300, 300);
+//            String base64QRCode = Base64.getEncoder().encodeToString(qrCodeImage);
+//            return ResponseEntity.ok(Map.of("qrCode", base64QRCode));
+//        } catch (WriterException | IOException e) {
+//            return ResponseEntity.status(500).body(Map.of("error", "Error generating QR Code: " + e.getMessage()));
+//        }
+//    }
 }

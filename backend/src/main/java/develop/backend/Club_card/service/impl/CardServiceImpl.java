@@ -27,56 +27,56 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class CardServiceImpl implements CardService {
 
-    private final CardRepository cardRepository;
-    private final UserRepository userRepository;
-    private final MessageSource messageSource;
-
-    public Card createCard(UserDetails userDetails,
-                           CreationCardPayload creationCardPayload){
-        User user = userRepository.findUserByUsername(userDetails.getUsername())
-            .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
-                "security.auth.errors.username.not.found", null, Locale.getDefault()
-            ), HttpStatus.NOT_FOUND));
-
-        Card card = new Card();
-
-        Integer cvc = Math.toIntExact(CardService.generateRandomNumber(3));
-        long number = CardService.generateRandomNumber(16);
-        Date currentDate = new Date();
-
-        card.setOpeningDate(currentDate);
-        card.setCvcCode(cvc);
-        card.setNumber(number);
-        card.setScore(0);
-        card.setIsBlocked(false);
-        card.setUser(user);
-        card.setColour(switch (creationCardPayload.colour()){
-            case "BLUE" -> CardColoursEnum.BLUE;
-            case "RED" -> CardColoursEnum.RED;
-            case "GREEN" -> CardColoursEnum.GREEN;
-            default -> throw new CustomException(this.messageSource.getMessage(
-                "validation.errors.colour.does.not.exist", null, Locale.getDefault()
-            ), HttpStatus.UNPROCESSABLE_ENTITY);
-        });
-        card.setPattern(switch (creationCardPayload.pattern()){
-            case "FULL" -> CardTemplatesEnum.FULL;
-            case "MIDDLE" -> CardTemplatesEnum.MIDDLE;
-            case "LOW" -> CardTemplatesEnum.LOW;
-            default -> throw new CustomException(this.messageSource.getMessage(
-                "validation.errors.pattern.does.not.exist", null, Locale.getDefault()
-            ), HttpStatus.UNPROCESSABLE_ENTITY);
-        });
-
-        cardRepository.save(card);
-
-    return card;
-
-    }
-
-    public void addScore(Card card, int inc) {
-        card.setScore(card.getScore()+inc);
-        cardRepository.save(card);
-    }
-
+//    private final CardRepository cardRepository;
+//    private final UserRepository userRepository;
+//    private final MessageSource messageSource;
+//
+//    public Card createCard(UserDetails userDetails,
+//                           CreationCardPayload creationCardPayload){
+//        User user = userRepository.findUserByUsername(userDetails.getUsername())
+//            .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
+//                "security.auth.errors.username.not.found", null, Locale.getDefault()
+//            ), HttpStatus.NOT_FOUND));
+//
+//        Card card = new Card();
+//
+//        Integer cvc = Math.toIntExact(CardService.generateRandomNumber(3));
+//        long number = CardService.generateRandomNumber(16);
+//        Date currentDate = new Date();
+//
+//        card.setOpeningDate(currentDate);
+//        card.setCvcCode(cvc);
+//        card.setNumber(number);
+//        card.setScore(0);
+//        card.setIsBlocked(false);
+//        card.setUser(user);
+//        card.setColour(switch (creationCardPayload.colour()){
+//            case "BLUE" -> CardColoursEnum.BLUE;
+//            case "RED" -> CardColoursEnum.RED;
+//            case "GREEN" -> CardColoursEnum.GREEN;
+//            default -> throw new CustomException(this.messageSource.getMessage(
+//                "validation.errors.colour.does.not.exist", null, Locale.getDefault()
+//            ), HttpStatus.UNPROCESSABLE_ENTITY);
+//        });
+//        card.setPattern(switch (creationCardPayload.pattern()){
+//            case "FULL" -> CardTemplatesEnum.FULL;
+//            case "MIDDLE" -> CardTemplatesEnum.MIDDLE;
+//            case "LOW" -> CardTemplatesEnum.LOW;
+//            default -> throw new CustomException(this.messageSource.getMessage(
+//                "validation.errors.pattern.does.not.exist", null, Locale.getDefault()
+//            ), HttpStatus.UNPROCESSABLE_ENTITY);
+//        });
+//
+//        cardRepository.save(card);
+//
+//    return card;
+//
+//    }
+//
+//    public void addScore(Card card, int inc) {
+//        card.setScore(card.getScore()+inc);
+//        cardRepository.save(card);
+//    }
+//
 
 }
