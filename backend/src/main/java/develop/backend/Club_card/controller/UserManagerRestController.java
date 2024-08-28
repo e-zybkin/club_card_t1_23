@@ -1,7 +1,9 @@
 package develop.backend.Club_card.controller;
 
-import develop.backend.Club_card.controller.payload.*;
-import develop.backend.Club_card.entity.User;
+import develop.backend.Club_card.controller.payload.user.GetUserPayload;
+import develop.backend.Club_card.controller.payload.user.UserIdPayload;
+import develop.backend.Club_card.controller.payload.user.UserUpdatePrivilegePayload;
+import develop.backend.Club_card.controller.payload.user.UserUpdateRolePayload;
 import develop.backend.Club_card.service.ManagerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

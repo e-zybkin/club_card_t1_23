@@ -1,6 +1,6 @@
 package develop.backend.Club_card.service.impl;
 
-import develop.backend.Club_card.controller.payload.UserUpdatePayload;
+import develop.backend.Club_card.controller.payload.user.UserUpdatePayload;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.repository.UserRepository;

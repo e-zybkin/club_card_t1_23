@@ -1,7 +1,7 @@
 package develop.backend.Club_card.controller;
 
-import develop.backend.Club_card.controller.payload.GetUserPayload;
-import develop.backend.Club_card.controller.payload.UserUpdatePayload;
+import develop.backend.Club_card.controller.payload.user.GetUserPayload;
+import develop.backend.Club_card.controller.payload.user.UserUpdatePayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;

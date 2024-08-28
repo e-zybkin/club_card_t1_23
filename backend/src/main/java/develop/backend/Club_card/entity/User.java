@@ -1,7 +1,7 @@
 package develop.backend.Club_card.entity;
 
-import develop.backend.Club_card.entity.enums.UserPrivilegesEnum;
-import develop.backend.Club_card.entity.enums.UserRolesEnum;
+import develop.backend.Club_card.entity.enums.user.UserPrivilegesEnum;
+import develop.backend.Club_card.entity.enums.user.UserRolesEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

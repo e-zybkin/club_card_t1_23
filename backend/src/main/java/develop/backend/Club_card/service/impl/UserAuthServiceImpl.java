@@ -1,11 +1,11 @@
 package develop.backend.Club_card.service.impl;
 
-import develop.backend.Club_card.controller.payload.UserLogInPayload;
-import develop.backend.Club_card.controller.payload.UserSignUpPayload;
+import develop.backend.Club_card.controller.payload.user.UserLogInPayload;
+import develop.backend.Club_card.controller.payload.user.UserSignUpPayload;
+import develop.backend.Club_card.entity.enums.user.UserPrivilegesEnum;
+import develop.backend.Club_card.entity.enums.user.UserRolesEnum;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.entity.User;
-import develop.backend.Club_card.entity.enums.UserPrivilegesEnum;
-import develop.backend.Club_card.entity.enums.UserRolesEnum;
 import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.security.JwtTokenProvider;
 import develop.backend.Club_card.service.UserAuthService;

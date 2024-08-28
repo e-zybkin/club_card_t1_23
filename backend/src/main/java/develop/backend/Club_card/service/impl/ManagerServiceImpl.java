@@ -1,15 +1,16 @@
 package develop.backend.Club_card.service.impl;
 
-import develop.backend.Club_card.controller.payload.*;
+import develop.backend.Club_card.controller.payload.user.GetUserPayload;
+import develop.backend.Club_card.controller.payload.user.UserIdPayload;
+import develop.backend.Club_card.controller.payload.user.UserUpdatePrivilegePayload;
+import develop.backend.Club_card.controller.payload.user.UserUpdateRolePayload;
+import develop.backend.Club_card.entity.enums.user.UserPrivilegesEnum;
+import develop.backend.Club_card.entity.enums.user.UserRolesEnum;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.entity.User;
-import develop.backend.Club_card.entity.enums.UserPrivilegesEnum;
-import develop.backend.Club_card.entity.enums.UserRolesEnum;
 import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.ManagerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.cglib.core.Local;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
