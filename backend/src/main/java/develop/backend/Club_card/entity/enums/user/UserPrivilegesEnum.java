@@ -1,4 +1,4 @@
-package develop.backend.Club_card.entity.enums;
+package develop.backend.Club_card.entity.enums.user;
 
 public enum UserPrivilegesEnum {
     PRIVILEGE_STANDARD,

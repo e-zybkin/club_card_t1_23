@@ -5,7 +5,7 @@ import develop.backend.Club_card.controller.payload.user.UserNamePayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.repository.UserRepository;
-import develop.backend.Club_card.service.impl.QRCodeServiceImpl;
+import develop.backend.Club_card.service.QRCodeService;
 import develop.backend.Club_card.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -52,7 +52,7 @@ public class QRCodeRestController {
         User user = userService.getCurrentUser(userDetails);
 
         try {
-            byte[] qrCodeImage = QRCodeServiceImpl.generateQRCodeImage(user.toString(), 300, 300);
+            byte[] qrCodeImage = QRCodeService.generateQRCodeImage(user.toString(), 300, 300);
             String base64QRCode = Base64.getEncoder().encodeToString(qrCodeImage);
             return ResponseEntity.ok(Map.of("qrCode", base64QRCode));
         } catch (WriterException | IOException e) {
@@ -91,7 +91,7 @@ public class QRCodeRestController {
 
 
         try {
-            byte[] qrCodeImage = QRCodeServiceImpl.generateQRCodeImage(mayBeUser.toString(), 300, 300);
+            byte[] qrCodeImage = QRCodeService.generateQRCodeImage(mayBeUser.toString(), 300, 300);
             String base64QRCode = Base64.getEncoder().encodeToString(qrCodeImage);
             return ResponseEntity.ok(Map.of("qrCode", base64QRCode));
         } catch (WriterException | IOException e) {

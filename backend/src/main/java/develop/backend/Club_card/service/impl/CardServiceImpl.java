@@ -3,9 +3,12 @@ package develop.backend.Club_card.service.impl;
 import develop.backend.Club_card.controller.payload.card.CreationCardPayload;
 import develop.backend.Club_card.entity.Card;
 import develop.backend.Club_card.entity.User;
+import develop.backend.Club_card.entity.enums.card.CardColoursEnum;
+import develop.backend.Club_card.entity.enums.card.CardTemplatesEnum;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.repository.CardRepository;
 import develop.backend.Club_card.repository.UserRepository;
+import develop.backend.Club_card.service.CardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -22,7 +25,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
-public class CardServiceImpl {
+public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
@@ -37,8 +40,8 @@ public class CardServiceImpl {
 
         Card card = new Card();
 
-        Integer cvc = Math.toIntExact(generateRandomNumber(3));
-        long number = generateRandomNumber(16);
+        Integer cvc = Math.toIntExact(CardService.generateRandomNumber(3));
+        long number = CardService.generateRandomNumber(16);
         Date currentDate = new Date();
 
         card.setOpeningDate(currentDate);
@@ -47,8 +50,22 @@ public class CardServiceImpl {
         card.setScore(0);
         card.setIsBlocked(false);
         card.setUser(user);
-        card.setColour(creationCardPayload.colour());
-        card.setPattern(creationCardPayload.pattern());
+        card.setColour(switch (creationCardPayload.colour()){
+            case "BLUE" -> CardColoursEnum.BLUE;
+            case "RED" -> CardColoursEnum.RED;
+            case "GREEN" -> CardColoursEnum.GREEN;
+            default -> throw new CustomException(this.messageSource.getMessage(
+                "validation.errors.colour.does.not.exist", null, Locale.getDefault()
+            ), HttpStatus.UNPROCESSABLE_ENTITY);
+        });
+        card.setPattern(switch (creationCardPayload.pattern()){
+            case "FULL" -> CardTemplatesEnum.FULL;
+            case "MIDDLE" -> CardTemplatesEnum.MIDDLE;
+            case "LOW" -> CardTemplatesEnum.LOW;
+            default -> throw new CustomException(this.messageSource.getMessage(
+                "validation.errors.pattern.does.not.exist", null, Locale.getDefault()
+            ), HttpStatus.UNPROCESSABLE_ENTITY);
+        });
 
         cardRepository.save(card);
 
@@ -61,43 +78,5 @@ public class CardServiceImpl {
         cardRepository.save(card);
     }
 
-
-    public static String generateHash(String input) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedhash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
-
-            StringBuilder hexString = new StringBuilder(2 * encodedhash.length);
-            for (byte b : encodedhash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("Error generating hash", e);
-        }
-    }
-
-    public static long generateRandomNumber(int length) {
-
-        long timestamp = System.currentTimeMillis();
-
-        Random random = new Random();
-        int randomValue = random.nextInt();
-
-        String input = timestamp + "_" + randomValue;
-
-        String hash = generateHash(input);
-
-        String hashSubstring = hash.substring(0, length);
-
-        BigInteger hashAsNumber = new BigInteger(hashSubstring, 16);
-
-        return hashAsNumber.longValue();
-    }
 
 }
