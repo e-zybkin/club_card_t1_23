@@ -1,5 +1,7 @@
 package develop.backend.Club_card.entity;
 
+import develop.backend.Club_card.entity.enums.card.CardColoursEnum;
+import develop.backend.Club_card.entity.enums.card.CardTemplatesEnum;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,10 +43,12 @@ public class Card {
     private Boolean isBlocked;
 
     @Column(name = "colour")
-    private String colour;
+    @Enumerated(EnumType.STRING)
+    private CardColoursEnum colour;
 
     @Column(name = "pattern")
-    private String pattern;
+    @Enumerated(EnumType.STRING)
+    private CardTemplatesEnum pattern;
 
     @Column(name = "qr_code")
     private String qrCode;
