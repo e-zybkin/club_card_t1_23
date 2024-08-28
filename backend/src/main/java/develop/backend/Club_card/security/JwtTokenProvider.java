@@ -39,13 +39,13 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String username) {
-        Optional<User> mayBeUser = userRepository.findUserByUsername(username);
+    public String createToken(String email) {
+        Optional<User> mayBeUser = userRepository.findUserByEmail(email);
 
-        Claims claims = Jwts.claims().setSubject(username);
+        Claims claims = Jwts.claims().setSubject(email);
         claims.put("auth", mayBeUser.map(user -> user.getRole().getRoleInString())
                 .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
-                        "security.auth.errors.username.not.found", null, Locale.getDefault()
+                        "security.auth.errors.email.not.found", null, Locale.getDefault()
                 ), HttpStatus.NOT_FOUND)));
 
         Date now = new Date();
@@ -59,13 +59,13 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String getUsernameFromToken(String token) {
+    public String getEmailFromToken(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
     }
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(
-                this.getUsernameFromToken(token)
+                this.getEmailFromToken(token)
         );
 
         return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(),

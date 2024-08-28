@@ -6,9 +6,14 @@ import jakarta.validation.constraints.Size;
 
 public record UserSignUpPayload(
 
-        @NotBlank(message = "{validation.errors.username.is.blank}")
-        @Size(min = 5, max = 255, message = "{validation.errors.username.size.is.invalid}")
-        String username,
+        @NotBlank(message = "{validation.errors.first.name.is.blank}")
+        String firstName,
+
+        @NotBlank(message = "{validation.errors.last.name.is.blank}")
+        String lastName,
+
+        @NotBlank(message = "{validation.errors.middle.name.is.blank}")
+        String middleName,
 
         @NotBlank(message = "{validation.errors.password.is.blank}")
         @Size(min = 5, max = 255, message = "{validation.errors.password.size.is.invalid}")
