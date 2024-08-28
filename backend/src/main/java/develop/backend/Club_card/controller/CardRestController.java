@@ -23,44 +23,43 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/club-card/api/card")
 public class CardRestController {
-//
-//    private final CardServiceImpl cardService;
-//    private final CardRepository cardRepository;
-//    private final UserServiceImpl userService;
-//
-//
-//    @Operation(
-//        summary = "Создание карты",
-//        description =
-//            "Выполняет создание карты." +
-//                "В случае успеха возвращает JSON с информацией о карте, пользователе и QR"
-//    )
-//    @PostMapping("create")
-//    public ResponseEntity<?> createCard(
-//        @AuthenticationPrincipal UserDetails userDetails,
-//        @Valid @RequestBody CreationCardPayload creationCardPayload
-//    ) {
-//
-//        Card card = cardService.createCard(userDetails, creationCardPayload);
-//
-//        return new ResponseEntity<>(card, HttpStatus.OK);
-//    }
-//
-//    @Operation(
-//        summary = "Создание карты",
-//        description =
-//            "Выполняет создание карты." +
-//                "В случае успеха возвращает JSON с информацией о карте, пользователе и QR"
-//    )
-//    @GetMapping()
-//    public ResponseEntity<?> getCardInfo(
-//        @AuthenticationPrincipal UserDetails userDetails
-//    ) {
-//
-//        Card card = cardRepository.findCardByUser(userService.getCurrentUser(userDetails));
-//
-//        return new ResponseEntity<>(card, HttpStatus.OK);
-//    }
+
+    private final CardServiceImpl cardService;
+    private final UserServiceImpl userService;
+
+
+    @Operation(
+        summary = "Создание карты",
+        description =
+            "Выполняет создание карты." +
+                "В случае успеха возвращает JSON с информацией о карте, пользователе и QR"
+    )
+    @PostMapping("create")
+    public ResponseEntity<?> createCard(
+        @AuthenticationPrincipal UserDetails userDetails,
+        @Valid @RequestBody CreationCardPayload creationCardPayload
+    ) {
+
+        Card card = cardService.createCard(userDetails, creationCardPayload);
+
+        return new ResponseEntity<>(card, HttpStatus.OK);
+    }
+
+    @Operation(
+        summary = "Создание карты",
+        description =
+            "Выполняет создание карты." +
+                "В случае успеха возвращает JSON с информацией о карте, пользователе и QR"
+    )
+    @GetMapping()
+    public ResponseEntity<?> getCardInfo(
+        @AuthenticationPrincipal UserDetails userDetails
+    ) {
+
+        Card card = userService.getCurrentUser(userDetails).getCard();
+
+        return new ResponseEntity<>(card, HttpStatus.OK);
+    }
 
 
 }
