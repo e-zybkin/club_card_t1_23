@@ -8,6 +8,7 @@ import develop.backend.Club_card.entity.enums.UserRolesEnum;
 import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.ManagerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cglib.core.Local;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -27,23 +28,30 @@ public class ManagerServiceImpl implements ManagerService {
     private final MessageSource messageSource;
 
     @Override
-    public List<GetUserPayload> findAllUsers() {
-         List<User> userList = userRepository.findAll();
-         List<GetUserPayload> getUserPayloadList = new ArrayList<>();
+    public List<GetUserPayload> findAllUsers(UserDetails userDetails) {
+        User requestSender = userRepository.findUserByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
+                "security.auth.errors.email.not.found", null, Locale.getDefault()
+        ), HttpStatus.NOT_FOUND));
 
-         for (User user : userList) {
-            getUserPayloadList.add(new GetUserPayload(
-                    user.getId(),
-                    user.getEmail(),
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getMiddleName(),
-                    user.getRole().getRoleInString(),
-                    user.getPrivilege().getPrivilegeInString()
-            ));
-         }
+        List<User> userList = userRepository.findAll();
+        List<GetUserPayload> getUserPayloadList = new ArrayList<>();
 
-         return getUserPayloadList;
+        for (User user : userList) {
+            if (!user.getId().equals(requestSender.getId()) && roleFilter(requestSender.getRole(), user.getRole())) {
+                getUserPayloadList.add(new GetUserPayload(
+                        user.getId(),
+                        user.getEmail(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getMiddleName(),
+                        user.getRole().getRoleInString(),
+                        user.getPrivilege().getPrivilegeInString()
+                ));
+            }
+        }
+
+        return getUserPayloadList;
     }
 
     @Override
@@ -150,5 +158,13 @@ public class ManagerServiceImpl implements ManagerService {
                     "validation.errors.privilege.does.not.exist", null, Locale.getDefault()
             ), HttpStatus.UNPROCESSABLE_ENTITY);
         };
+    }
+
+    private boolean roleFilter(UserRolesEnum requestSenderRole, UserRolesEnum userRole) {
+        if (requestSenderRole.equals(UserRolesEnum.ROLE_MANAGER)) {
+            return userRole.equals(UserRolesEnum.ROLE_MEMBER);
+        }
+
+        return true;
     }
 }

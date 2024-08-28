@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 
 public interface ManagerService {
-    List<GetUserPayload> findAllUsers();
+    List<GetUserPayload> findAllUsers(UserDetails userDetails);
     List<GetUserPayload> findAllUsersWhoSentDeletionRequest();
     void deleteUser(UserIdPayload userIdPayload, UserDetails userDetails);
     void updateUserRole(UserUpdateRolePayload userUpdateRolePayload);

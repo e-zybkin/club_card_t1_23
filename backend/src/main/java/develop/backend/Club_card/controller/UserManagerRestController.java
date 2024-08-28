@@ -120,8 +120,8 @@ public class UserManagerRestController {
     })
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @GetMapping("get/users")
-    public List<GetUserPayload> findAllUsers() {
-        return this.managerService.findAllUsers();
+    public List<GetUserPayload> findAllUsers(@AuthenticationPrincipal UserDetails userDetails) {
+        return this.managerService.findAllUsers(userDetails);
     }
 
     @Operation(
