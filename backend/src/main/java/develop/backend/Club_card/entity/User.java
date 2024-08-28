@@ -21,15 +21,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "username", unique = true, nullable = false)
-    private String username;
-
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
-
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
@@ -39,15 +30,18 @@ public class User {
     @Column(name = "middle_name", nullable = false)
     private String middleName;
 
-    @Column(name = "date_of_birth", nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
+
+    @Column(name = "password", nullable = false)
+    private String password;
+
+    @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
     @Column(name = "is_pending_deletion", nullable = false)
     private Boolean isPendingDeletion;
-
-    @Column(name = "is_full_name_updated", nullable = false)
-    private Boolean isFullNameUpdated;
 
     @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -60,8 +54,4 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "card_id", referencedColumnName = "id")
     private Card card;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "deletion_request_id", referencedColumnName = "id")
-    private DeletionRequest deletionRequest;
 }
