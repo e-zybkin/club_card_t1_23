@@ -45,8 +45,7 @@ public class UserRestController {
         User user = userService.getCurrentUser(userDetails);
 
         return ResponseEntity.ok().body(new GetUserPayload(
-                user.getUsername(),
-                user.getPassword(),
+                user.getId(),
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
@@ -64,7 +63,7 @@ public class UserRestController {
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Данные текущего пользователя обновлены"),
+            @ApiResponse(responseCode = "200", description = "Данные текущего пользователя обновлены"),
             @ApiResponse(responseCode = "401", description = "Пользователь не аутентифицирован"),
             @ApiResponse(responseCode = "404", description = "Пользователь с данным логином не найден"),
             @ApiResponse(responseCode = "400", description = "Некорректный формат данных в теле запроса"),
@@ -88,7 +87,7 @@ public class UserRestController {
         }
 
         userService.updateCurrentUserData(userDetails, userUpdatePayload);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().body(userUpdatePayload);
     }
 
     @Operation(
@@ -97,14 +96,14 @@ public class UserRestController {
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Запрос на удаление аккаунта успешно отправлен"),
+            @ApiResponse(responseCode = "200", description = "Запрос на удаление аккаунта успешно отправлен"),
             @ApiResponse(responseCode = "401", description = "Пользователь не аутентифицирован"),
             @ApiResponse(responseCode = "500", description = "Недействительный JWT-токен")
     })
     @PostMapping
     public ResponseEntity<?> makeDeletionRequest(@AuthenticationPrincipal UserDetails userDetails) {
         userService.makeDeletionRequest(userDetails);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.ok().build();
     }
 
 }

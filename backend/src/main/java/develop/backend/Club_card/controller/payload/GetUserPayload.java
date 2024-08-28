@@ -7,13 +7,8 @@ import jakarta.validation.constraints.Size;
 
 public record GetUserPayload(
 
-        @NotBlank(message = "{validation.errors.username.is.blank}")
-        @Size(min = 5, max = 255, message = "{validation.errors.username.size.is.invalid}")
-        String username,
-
-        @NotBlank(message = "{validation.errors.password.is.blank}")
-        @Size(min = 5, max = 255, message = "{validation.errors.password.size.is.invalid}")
-        String password,
+        @NotNull(message = "{validation.errors.id.is.null}")
+        Integer id,
 
         @NotBlank(message = "{validation.errors.email.is.blank}")
         @Pattern(

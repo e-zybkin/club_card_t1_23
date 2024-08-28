@@ -34,13 +34,13 @@ public class UserAuthRestController {
     @Operation(
             summary = "Аутентификация пользователя",
             description =
-                    "Выполняет аутентификацию по логину и паролю. " +
+                    "Выполняет аутентификацию по email и паролю. " +
                     "В случае успеха возвращает JSON с именем и JWT."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Пользователь аутентифицирован"),
             @ApiResponse(responseCode = "400", description = "Некорректный формат данных в теле запроса"),
-            @ApiResponse(responseCode = "404", description = "Пользователь с данным логином не найден"),
+            @ApiResponse(responseCode = "404", description = "Пользователь с данным email не найден"),
             @ApiResponse(responseCode = "403", description = "Пользователь ожидает удаления аккаунта и" +
                     " не может быть аутентифицирован")
     })
@@ -62,7 +62,7 @@ public class UserAuthRestController {
         return ResponseEntity.ok()
                 .body(Map.of(
                         "token", jwtToken,
-                        "username", userLogInPayload.username()
+                        "email", userLogInPayload.email()
                 ));
     }
 
@@ -73,8 +73,8 @@ public class UserAuthRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Пользователь зарегистрирован"),
             @ApiResponse(responseCode = "400", description = "Некорректный формат данных в теле запроса"),
-            @ApiResponse(responseCode = "422", description = "Пользователь с таким логином и/или email" +
-                    " уже существует")
+            @ApiResponse(responseCode = "422", description = "Пользователь с таким email " +
+                    "уже существует")
     })
     @PostMapping("signup")
     public ResponseEntity<?> signup(
@@ -93,7 +93,6 @@ public class UserAuthRestController {
         User user = userAuthService.signup(userSignUpPayload);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "username", user.getUsername(),
                 "email", user.getEmail()
         ));
     }

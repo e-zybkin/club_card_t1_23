@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/club-card/api/card")
 public class CardRestController {
 
-    private final CardServiceImpl cardService;
-
-    @PostMapping
-    public ResponseEntity<?> createCard(
-        @AuthenticationPrincipal UserDetails userDetails
-        //image
-    ) {
-
-        Card card = cardService.createCard(userDetails);
-
-        return new ResponseEntity<>(card, HttpStatus.OK);
-
-}
+//    private final CardServiceImpl cardService;
+//
+//    @PostMapping
+//    public ResponseEntity<?> createCard(
+//        @AuthenticationPrincipal UserDetails userDetails
+//        //image
+//    ) {
+//
+//        Card card = cardService.createCard(userDetails);
+//
+//        return new ResponseEntity<>(card, HttpStatus.OK);
+//
+//}
 
 
 }

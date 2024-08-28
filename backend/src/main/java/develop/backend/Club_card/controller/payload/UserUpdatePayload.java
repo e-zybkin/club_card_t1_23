@@ -6,9 +6,8 @@ import java.util.Date;
 
 public record UserUpdatePayload(
 
-        @NotBlank(message = "{validation.errors.username.is.blank}")
-        @Size(min = 5, max = 255, message = "{validation.errors.username.size.is.invalid}")
-        String username,
+        @NotNull(message = "{validation.errors.id.is.null}")
+        Integer id,
 
         @NotBlank(message = "{validation.errors.email.is.blank}")
         @Pattern(

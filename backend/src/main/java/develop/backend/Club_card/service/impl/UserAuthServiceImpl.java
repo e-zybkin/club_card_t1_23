@@ -15,7 +15,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +25,8 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class UserAuthServiceImpl implements UserAuthService {
 
-    @Value("${security.auth.super.admin.username}")
-    private String superAdminUsername;
+    @Value("${security.auth.super.admin.email}")
+    private String superAdminEmail;
 
     @Value("${security.auth.super.admin.password}")
     private String superAdminPassword;
@@ -39,29 +38,12 @@ public class UserAuthServiceImpl implements UserAuthService {
     private final MessageSource messageSource;
 
     @Override
-    public String login(UserLogInPayload userLogInPayload) {
-        String username = userLogInPayload.username();
-        String password = userLogInPayload.password();
-
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            return jwtTokenProvider.createToken(username);
-        } catch (CustomException ex) {
-            throw new CustomException(ex.getMessage(), ex.getHttpStatus());
-        }
-    }
-
-    @Override
     public User signup(UserSignUpPayload userSignUpPayload) {
-        String username = userSignUpPayload.username();
-        String password = userSignUpPayload.password();
+        String firstName = userSignUpPayload.firstName();
+        String lastName = userSignUpPayload.lastName();
+        String middleName = userSignUpPayload.middleName();
         String email = userSignUpPayload.email();
-
-        if (userRepository.existsUserByUsername(username)) {
-            throw new CustomException(this.messageSource.getMessage(
-                    "security.auth.errors.username.already.exists", null, Locale.getDefault()
-            ), HttpStatus.UNPROCESSABLE_ENTITY);
-        }
+        String password = userSignUpPayload.password();
 
         if (userRepository.existsUserByEmail(email)) {
             throw new CustomException(this.messageSource.getMessage(
@@ -70,29 +52,39 @@ public class UserAuthServiceImpl implements UserAuthService {
         }
 
         String passwordEncoded = passwordEncoder.encode(password);
-        UserRolesEnum userRolesEnum = UserRolesEnum.ROLE_MEMBER;
-        UserPrivilegesEnum userPrivilegesEnum = UserPrivilegesEnum.PRIVILEGE_STANDARD;
+        UserRolesEnum role = UserRolesEnum.ROLE_MEMBER;
+        UserPrivilegesEnum privilege = UserPrivilegesEnum.PRIVILEGE_STANDARD;
 
-        if (username.equals(superAdminUsername) && password.equals(superAdminPassword)) {
-            userRolesEnum = UserRolesEnum.ROLE_OWNER;
-            userPrivilegesEnum = UserPrivilegesEnum.PRIVILEGE_VIP;
+        if (email.equals(superAdminEmail) && password.equals(superAdminPassword)) {
+            role = UserRolesEnum.ROLE_OWNER;
+            privilege = UserPrivilegesEnum.PRIVILEGE_VIP;
         }
 
         return userRepository.save(new User(
                 -1,
-                username,
-                passwordEncoded,
+                firstName,
+                lastName,
+                middleName,
                 email,
-                "",
-                "",
-                "",
+                passwordEncoded,
                 new Date(),
                 false,
-                false,
-                userRolesEnum,
-                userPrivilegesEnum,
-                null,
+                role,
+                privilege,
                 null
         ));
+    }
+
+    @Override
+    public String login(UserLogInPayload userLogInPayload) {
+        String email = userLogInPayload.email();
+        String password = userLogInPayload.password();
+
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            return jwtTokenProvider.createToken(email);
+        } catch (CustomException ex) {
+            throw new CustomException(ex.getMessage(), ex.getHttpStatus());
+        }
     }
 }

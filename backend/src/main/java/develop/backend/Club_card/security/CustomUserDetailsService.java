@@ -21,12 +21,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        Optional<User> mayBeUser = userRepository.findUserByUsername(username);
+    public UserDetails loadUserByUsername(String email) {
+        Optional<User> mayBeUser = userRepository.findUserByEmail(email);
 
         if (mayBeUser.isEmpty()) {
             throw new CustomException(this.messageSource.getMessage(
-                    "security.auth.errors.username.not.found", null, Locale.getDefault()
+                    "security.auth.errors.email.not.found", null, Locale.getDefault()
             ), HttpStatus.NOT_FOUND);
         }
 
@@ -37,7 +37,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         return org.springframework.security.core.userdetails.User
-                .withUsername(username)
+                .withUsername(email)
                 .password(mayBeUser.get().getPassword())
                 .authorities(mayBeUser.get().getRole().getRoleInString())
                 .accountExpired(false)

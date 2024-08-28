@@ -10,9 +10,6 @@
         <module name="Club_card" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Club_card" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
