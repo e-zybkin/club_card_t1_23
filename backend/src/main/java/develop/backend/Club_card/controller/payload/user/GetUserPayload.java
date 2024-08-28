@@ -1,10 +1,11 @@
-package develop.backend.Club_card.controller.payload;
+package develop.backend.Club_card.controller.payload.user;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record ArchivedUserPayload(
+public record GetUserPayload(
 
         @NotBlank(message = "{validation.errors.username.is.blank}")
         @Size(min = 5, max = 255, message = "{validation.errors.username.size.is.invalid}")
@@ -20,6 +21,15 @@ public record ArchivedUserPayload(
                 message = "{validation.errors.email.format.is.invalid}"
         )
         String email,
+
+        @NotNull(message = "{validation.errors.first.name.is.null}")
+        String firstName,
+
+        @NotNull(message = "{validation.errors.last.name.is.null}")
+        String lastName,
+
+        @NotNull(message = "{validation.errors.middle.name.is.null}")
+        String middleName,
 
         @Pattern(
                 regexp = "ROLE_MANAGER|ROLE_MEMBER",

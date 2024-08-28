@@ -1,4 +1,4 @@
-package develop.backend.Club_card.controller.payload;
+package develop.backend.Club_card.controller.payload.card;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Temporal;
@@ -19,6 +19,12 @@ public record CardInfoPayload (
 
     Integer score,
 
-    Boolean isBlocked
+    Boolean isBlocked,
+
+    String colour,
+
+    String pattern,
+
+    String qrCode
 ){
 }

@@ -1,12 +1,13 @@
 package develop.backend.Club_card.controller;
 
 import com.google.zxing.WriterException;
-import develop.backend.Club_card.controller.payload.UserNamePayload;
+import develop.backend.Club_card.controller.payload.user.UserNamePayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.impl.QRCodeServiceImpl;
 import develop.backend.Club_card.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -38,6 +39,13 @@ public class QRCodeRestController {
     private final MessageSource messageSource;
     private final UserRepository userRepository;
 
+
+    @Operation(
+        summary = "Генерация QR-кода для пользователя",
+        description =
+            "Генерируется QR-код с информацией о пользователе." +
+                "Информация о пользователе берется на основе JWT-токена: кто сделал запрос, того информация и вернулась."
+    )
     @GetMapping("generate")
     public ResponseEntity<Map<String, String>> generateQRCode(@AuthenticationPrincipal UserDetails userDetails) {
 
@@ -52,6 +60,13 @@ public class QRCodeRestController {
         }
     }
 
+    @Operation(
+        summary = "Генерация QR-кода по запросу админа",
+        description =
+            "Генерируется QR-код с информацией о пользователе." +
+                "Информация о пользователе берется на основе username, который отправляется с frontend в json." +
+                "Доступно только для админа и суперадмина."
+    )
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @PostMapping("generate")
     public ResponseEntity<Map<String, String>> generateQRCodeForAdmin(@AuthenticationPrincipal UserDetails userDetails,

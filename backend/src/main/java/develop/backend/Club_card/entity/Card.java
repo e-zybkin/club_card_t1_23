@@ -43,4 +43,13 @@ public class Card {
 
     @Column(name = "is_blocked")
     private Boolean isBlocked;
+
+    @Column(name = "colour")
+    private String colour;
+
+    @Column(name = "pattern")
+    private String pattern;
+
+    @Column(name = "qr_code")
+    private String qrCode;
 }

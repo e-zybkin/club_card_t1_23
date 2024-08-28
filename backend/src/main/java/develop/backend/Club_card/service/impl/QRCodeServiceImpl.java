@@ -7,10 +7,12 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import develop.backend.Club_card.service.QRCodeService;
+import org.springframework.http.ResponseEntity;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import javax.imageio.ImageIO;
@@ -30,5 +32,6 @@ public class QRCodeServiceImpl implements QRCodeService {
         ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
     }
+
 
 }

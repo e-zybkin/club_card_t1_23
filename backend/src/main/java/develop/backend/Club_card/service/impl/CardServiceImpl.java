@@ -1,5 +1,6 @@
 package develop.backend.Club_card.service.impl;
 
+import develop.backend.Club_card.controller.payload.card.CreationCardPayload;
 import develop.backend.Club_card.entity.Card;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.exception.CustomException;
@@ -27,7 +28,8 @@ public class CardServiceImpl {
     private final UserRepository userRepository;
     private final MessageSource messageSource;
 
-    public Card createCard(UserDetails userDetails){
+    public Card createCard(UserDetails userDetails,
+                           CreationCardPayload creationCardPayload){
         User user = userRepository.findUserByUsername(userDetails.getUsername())
             .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
                 "security.auth.errors.username.not.found", null, Locale.getDefault()
@@ -35,7 +37,6 @@ public class CardServiceImpl {
 
         Card card = new Card();
 
-        Random random = new Random();
         Integer cvc = Math.toIntExact(generateRandomNumber(3));
         long number = generateRandomNumber(16);
         Date currentDate = new Date();
@@ -46,6 +47,8 @@ public class CardServiceImpl {
         card.setScore(0);
         card.setIsBlocked(false);
         card.setUser(user);
+        card.setColour(creationCardPayload.colour());
+        card.setPattern(creationCardPayload.pattern());
 
         cardRepository.save(card);
 
@@ -59,14 +62,11 @@ public class CardServiceImpl {
     }
 
 
-
-
     public static String generateHash(String input) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] encodedhash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
 
-            // Преобразуем байты в шестнадцатеричную строку
             StringBuilder hexString = new StringBuilder(2 * encodedhash.length);
             for (byte b : encodedhash) {
                 String hex = Integer.toHexString(0xff & b);
@@ -83,26 +83,20 @@ public class CardServiceImpl {
     }
 
     public static long generateRandomNumber(int length) {
-        // Получаем текущую временную метку
+
         long timestamp = System.currentTimeMillis();
 
-        // Генерируем случайное число для дополнительной энтропии
         Random random = new Random();
         int randomValue = random.nextInt();
 
-        // Формируем строку для хеширования
         String input = timestamp + "_" + randomValue;
 
-        // Генерируем хеш
         String hash = generateHash(input);
 
-        // Извлекаем нужное количество символов из хеша и преобразуем в число
         String hashSubstring = hash.substring(0, length);
 
-        // Преобразуем шестнадцатеричную строку в десятичное число
         BigInteger hashAsNumber = new BigInteger(hashSubstring, 16);
 
-        // Возвращаем числовое значение, обрезанное до нужного размера
         return hashAsNumber.longValue();
     }
 

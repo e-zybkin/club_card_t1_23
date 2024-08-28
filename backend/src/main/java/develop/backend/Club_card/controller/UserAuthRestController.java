@@ -1,12 +1,10 @@
 package develop.backend.Club_card.controller;
 
-import develop.backend.Club_card.controller.payload.UserLogInPayload;
-import develop.backend.Club_card.controller.payload.UserSignUpPayload;
+import develop.backend.Club_card.controller.payload.user.UserLogInPayload;
+import develop.backend.Club_card.controller.payload.user.UserSignUpPayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.service.UserAuthService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
