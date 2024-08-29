@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.AbstractMap;
 import java.util.Map;
 
 @Tag(name = "user_auth_endpoints")
@@ -35,7 +36,7 @@ public class UserAuthRestController {
             summary = "Аутентификация пользователя",
             description =
                     "Выполняет аутентификацию по email и паролю. " +
-                            "В случае успеха возвращает JSON с именем и JWT."
+                            "В случае успеха возвращает JSON с email, ФИО и JWT."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Пользователь аутентифицирован"),
@@ -57,12 +58,15 @@ public class UserAuthRestController {
             throw new BindException(bindingResult);
         }
 
-        String jwtToken = userAuthService.login(userLogInPayload);
+        AbstractMap.SimpleEntry<User, String> userToTokenMapping = userAuthService.login(userLogInPayload);
 
         return ResponseEntity.ok()
                 .body(Map.of(
-                        "token", jwtToken,
-                        "email", userLogInPayload.email()
+                        "token", userToTokenMapping.getValue(),
+                        "email", userLogInPayload.email(),
+                        "firstName", userToTokenMapping.getKey().getFirstName(),
+                        "lastName", userToTokenMapping.getKey().getLastName(),
+                        "middleName", userToTokenMapping.getKey().getMiddleName()
                 ));
     }
 

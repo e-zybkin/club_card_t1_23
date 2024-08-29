@@ -18,6 +18,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.AbstractMap;
 import java.util.Date;
 import java.util.Locale;
 
@@ -76,13 +77,20 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    public String login(UserLogInPayload userLogInPayload) {
+    public AbstractMap.SimpleEntry<User, String> login(UserLogInPayload userLogInPayload) {
         String email = userLogInPayload.email();
         String password = userLogInPayload.password();
 
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            return jwtTokenProvider.createToken(email);
+
+            User user = userRepository.findUserByEmail(email)
+                    .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
+                            "security.auth.errors.email.not.found", null, Locale.getDefault()
+                    ), HttpStatus.NOT_FOUND));
+
+            return new AbstractMap.SimpleEntry<>(user, jwtTokenProvider.createToken(email));
+
         } catch (CustomException ex) {
             throw new CustomException(ex.getMessage(), ex.getHttpStatus());
         }

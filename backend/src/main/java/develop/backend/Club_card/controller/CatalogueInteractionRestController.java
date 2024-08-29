@@ -20,23 +20,4 @@ import java.util.Map;
 @RequestMapping("/club-card/api/catalogue")
 @RequiredArgsConstructor
 public class CatalogueInteractionRestController {
-
-//    private final CurrencyInteractionRestClient currencyInteractionRestClient;
-//    private final MessageSource messageSource;
-//
-//    @GetMapping("/money")
-//    public ResponseEntity<?> getMoneyFromClubCardApi(@AuthenticationPrincipal UserDetails userDetails) {
-//        BigDecimal moneyCount = currencyInteractionRestClient.getUserBalanceFromCurrencyService(userDetails.getUsername());
-//
-//        if (moneyCount < 0) {
-//            throw new CustomException(this.messageSource.getMessage(
-//                    "catalogue.interaction.errors.balance.is.negative", null, Locale.getDefault()
-//            ), HttpStatus.UNPROCESSABLE_ENTITY);
-//        }
-//
-//        return ResponseEntity.ok().body(Map.of(
-//                "balance", moneyCount
-//        ));
-//    }
-
 }

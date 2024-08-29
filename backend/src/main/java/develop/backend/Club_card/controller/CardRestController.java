@@ -27,7 +27,6 @@ public class CardRestController {
     private final CardServiceImpl cardService;
     private final UserServiceImpl userService;
 
-
     @Operation(
         summary = "Создание карты",
         description =
