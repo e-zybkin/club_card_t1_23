@@ -17,44 +17,85 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class UserAuthController {
 
-//    @Autowired
-//    private MockMvc mockMvc;
-//
-//    @Test
-//    public void signUpWithValidRequestReturnsValidMessage() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("""
-//                            {
-//                                "username": "Sandy",
-//                                "password": "12345",
-//                                "email": "sandy@gmail.com"
-//                            }
-//                        """))
-//                .andExpect(status().isCreated())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("Sandy"))
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("sandy@gmail.com"));
-//    }
-//
-//    @Test
-//    public void signUpWithInvalidEmailReturnsBadRequest() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("""
-//                            {
-//                                "username": "Sandy",
-//                                "password": "12345",
-//                                "email": "invalidEmail"
-//                            }
-//                        """))
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @Test
-//    @Sql("/sql/user.sql")
-//    public void signUpUserWithExistingUsernameReturnsUnprocessableEntity() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
-//                .contentType(Me))
-//    }
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    public void signUpWithValidRequestReturnsValidData() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {
+                                "firstName": "Иван",
+                                "lastName": "Иванов",
+                                "middleName": "Иванович",
+                                "email": "ivanov@gmail.com",
+                                "password": "123456"
+                            }
+                        """))
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"));
+    }
+
+    @Test
+    public void signUpWithInvalidEmailReturnsBadRequest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                        "firstName": "Олег",
+                        "lastName": "Олегов",
+                        "middleName": "Олегович",
+                        "email": "dshvbshjvbsb",
+                        "password": "123456"
+                    }
+                """))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Sql("/sql/add_user.sql")
+    public void signUpWithExistingEmailReturnsUnprocessableEntity() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                        "firstName": "Игорь",
+                        "lastName": "Николаев",
+                        "middleName": "Игоревич",
+                        "email": "example@gmail.com",
+                        "password": "123456"
+                    }
+                """))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void signUpAndLoginWithValidRequest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                            {
+                                "firstName": "Иван",
+                                "lastName": "Иванов",
+                                "middleName": "Иванович",
+                                "email": "ivanov@gmail.com",
+                                "password": "123456"
+                            }
+                        """))
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                        "email": "ivanov@gmail.com",
+                        "password": "123456"
+                    }
+                """))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"));
+    }
 
 }
