@@ -93,7 +93,7 @@ function Header({ signOut, editUser }: props) {
           />
           <Button
             type="button"
-            label={currentUser?.username}
+            label={`${currentUser?.firstName} ${currentUser?.lastName}`}
             icon="pi pi-user"
             onClick={(event) => userMenu.current?.toggle(event)}
             aria-controls="user_menu"
