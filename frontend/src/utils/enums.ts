@@ -11,3 +11,15 @@ export enum UserPriveleges {
   high="PRIVILEGE_HIGH",
   vip="PRIVILEGE_VIP"
 }
+
+export enum CardTemplates {
+  FULL = "FULL",
+  MIDDLE = "MIDDLE",
+  LOW = "MINIMAL",
+}
+
+export enum CardColors {
+  BLUE = "#00aae6",
+  RED = "#ff2969",
+  GREEN = "#88f657"
+}
