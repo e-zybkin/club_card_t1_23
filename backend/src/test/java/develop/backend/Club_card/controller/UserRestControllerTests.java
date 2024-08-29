@@ -1,8 +1,7 @@
 package develop.backend.Club_card.controller;
 
 import develop.backend.Club_card.TestBeans;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,17 +16,19 @@ import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = TestBeans.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureMockMvc
-public class UserController {
+public class UserRestControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
-    public void signUpClubMemberWithValidRequestReturnsValidMessage() throws Exception {
+    @Test
+    @Order(1)
+    public void loginUserWithValidRequestAndGetUserData() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
                     {
                         "firstName": "Иван",
                         "lastName": "Иванов",
@@ -38,10 +39,7 @@ public class UserController {
                 """))
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"));
-    }
 
-    @Test
-    public void loginUserWithValidRequestAndGetUserData() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -71,6 +69,7 @@ public class UserController {
     }
 
     @Test
+    @Order(2)
     public void loginUserAndUpdateUserDataWithValidRequest() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +92,6 @@ public class UserController {
             .contentType(MediaType.APPLICATION_JSON)
             .content("""
                 {
-                   "id": 1,
                    "email": "sergeev@gmail.com",
                    "firstName": "Сергей",
                    "lastName": "Сергеев",
@@ -105,12 +103,13 @@ public class UserController {
     }
 
     @Test
+    @Order(3)
     public void loginUserAndUpdateUserDataWithInvalidRequest() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                     {
-                        "email": "ivanov@gmail.com",
+                        "email": "sergeev@gmail.com",
                         "password": "123456"
                     }
                 """))
@@ -127,8 +126,8 @@ public class UserController {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                 {
-                   "id": 1,
                    "email": "sergeev@gmail.com",
+                   "firstName": "          ",
                    "lastName": "Сергеев",
                    "middleName": "Сергеевич",
                    "dateOfBirth": "2005-10-02"
@@ -138,12 +137,13 @@ public class UserController {
     }
 
     @Test
+    @Order(4)
     public void loginUserAndMakeDeletionRequestReturnsOkStatus() throws Exception {
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                     {
-                        "email": "ivanov@gmail.com",
+                        "email": "sergeev@gmail.com",
                         "password": "123456"
                     }
                 """))
@@ -158,6 +158,21 @@ public class UserController {
         mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/users")
                 .header("Authorization", "Bearer " + bearerToken))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @Order(5)
+    public void loginUserReturnsForbidden() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                    {
+                        "email": "sergeev@gmail.com",
+                        "password": "123456"
+                    }
+                """))
+                .andExpect(status().isForbidden())
+                .andReturn();
     }
 
 }
