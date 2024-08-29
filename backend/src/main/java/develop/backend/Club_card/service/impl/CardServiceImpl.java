@@ -71,6 +71,9 @@ public class CardServiceImpl implements CardService {
 
         cardRepository.save(card);
 
+        user.setCard(card);
+        userRepository.save(user);
+
     return card;
 
     }
