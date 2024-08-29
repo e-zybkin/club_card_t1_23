@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-import java.util.UUID;
 
 @Tag(name = "user_auth_endpoints")
 @RestController
@@ -36,7 +35,7 @@ public class UserAuthRestController {
             summary = "Аутентификация пользователя",
             description =
                     "Выполняет аутентификацию по email и паролю. " +
-                    "В случае успеха возвращает JSON с именем и JWT."
+                            "В случае успеха возвращает JSON с именем и JWT."
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Пользователь аутентифицирован"),
