@@ -9,6 +9,7 @@ import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.repository.CardRepository;
 import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.CardService;
+import develop.backend.Club_card.service.QRCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -66,7 +67,7 @@ public class CardServiceImpl implements CardService {
                 "validation.errors.pattern.does.not.exist", null, Locale.getDefault()
             ), HttpStatus.UNPROCESSABLE_ENTITY);
         });
-        card.setQrCode("waiting");
+        card.setQrCode(QRCodeService.getStringQR(user));
 
         cardRepository.save(card);
 
