@@ -92,7 +92,7 @@ public class UserAuthRestController {
 
         User user = userAuthService.signup(userSignUpPayload);
 
-        emailService.sendVerificationEmail(user, "checkForToken");
+//        emailService.sendVerificationEmail(user, "checkForToken");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "email", user.getEmail()

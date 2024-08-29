@@ -85,7 +85,7 @@ public class UserManagerRestController {
                     "имеет недостаточно прав доступа"),
             @ApiResponse(responseCode = "500", description = "Недействительный JWT-токен")
     })
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @PatchMapping("update/privilege")
     public ResponseEntity<?> updateUserPrivilege(
             @Valid @RequestBody UserUpdatePrivilegePayload userUpdatePrivilegePayload,

@@ -16,7 +16,7 @@ public record UserSignUpPayload(
         String middleName,
 
         @NotBlank(message = "{validation.errors.password.is.blank}")
-        @Size(min = 5, max = 255, message = "{validation.errors.password.size.is.invalid}")
+        @Size(min = 5, max = 25, message = "{validation.errors.password.size.is.invalid}")
         String password,
 
         @NotBlank(message = "{validation.errors.email.is.blank}")
