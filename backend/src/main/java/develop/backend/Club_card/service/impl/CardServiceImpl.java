@@ -42,9 +42,10 @@ public class CardServiceImpl implements CardService {
 
         Integer cvc = Math.toIntExact(CardService.generateRandomNumber(3));
         long number = CardService.generateRandomNumber(16);
-        Date currentDate = new Date();
+        Date currentDate = new Date(System.currentTimeMillis());
 
         card.setOpeningDate(currentDate);
+        card.setDateOfExpiration(new Date(System.currentTimeMillis() + 86400000*3)); // 3 суток
         card.setCvcCode(cvc);
         card.setNumber(number);
         card.setScore(0);
@@ -65,6 +66,7 @@ public class CardServiceImpl implements CardService {
                 "validation.errors.pattern.does.not.exist", null, Locale.getDefault()
             ), HttpStatus.UNPROCESSABLE_ENTITY);
         });
+        card.setQrCode("waiting");
 
         cardRepository.save(card);
 
