@@ -52,13 +52,7 @@ public class QRCodeRestController {
 
         User user = userService.getCurrentUser(userDetails);
 
-        try {
-            byte[] qrCodeImage = QRCodeService.generateQRCodeImage(user.toString(), 300, 300);
-            String base64QRCode = Base64.getEncoder().encodeToString(qrCodeImage);
-            return ResponseEntity.ok(Map.of("qrCode", base64QRCode));
-        } catch (WriterException | IOException e) {
-            return ResponseEntity.status(500).body(Map.of("error", "Error generating QR Code: " + e.getMessage()));
-        }
+        return QRCodeService.encodeQR(user);
     }
 
     @Operation(
@@ -90,13 +84,8 @@ public class QRCodeRestController {
             ), HttpStatus.NOT_FOUND);
         }
 
+        User user = mayBeUser.get();
 
-        try {
-            byte[] qrCodeImage = QRCodeService.generateQRCodeImage(mayBeUser.toString(), 300, 300);
-            String base64QRCode = Base64.getEncoder().encodeToString(qrCodeImage);
-            return ResponseEntity.ok(Map.of("qrCode", base64QRCode));
-        } catch (WriterException | IOException e) {
-            return ResponseEntity.status(500).body(Map.of("error", "Error generating QR Code: " + e.getMessage()));
-        }
+       return QRCodeService.encodeQR(user);
     }
 }
