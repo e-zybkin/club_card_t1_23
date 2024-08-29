@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateCurrentUserData(UserDetails userDetails, UserUpdatePayload userUpdatePayload) {
+    public User updateCurrentUserData(UserDetails userDetails, UserUpdatePayload userUpdatePayload) {
         User user = this.getCurrentUser(userDetails);
         String newEmail = userUpdatePayload.email();
         String oldEmail = user.getEmail();
@@ -66,6 +66,6 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userUpdatePayload.lastName());
         user.setMiddleName(userUpdatePayload.middleName());
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 }

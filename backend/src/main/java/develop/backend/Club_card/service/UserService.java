@@ -6,6 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserService {
     User getCurrentUser(UserDetails userDetails);
+    User updateCurrentUserData(UserDetails userDetails, UserUpdatePayload userUpdatePayload);
     void makeDeletionRequest(UserDetails userDetails);
-    void updateCurrentUserData(UserDetails userDetails, UserUpdatePayload userUpdatePayload);
 }

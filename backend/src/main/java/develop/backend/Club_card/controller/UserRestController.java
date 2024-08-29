@@ -85,8 +85,8 @@ public class UserRestController {
             throw new BindException(bindingResult);
         }
 
-        userService.updateCurrentUserData(userDetails, userUpdatePayload);
-        return ResponseEntity.ok().body(userUpdatePayload);
+        User updatedUser = userService.updateCurrentUserData(userDetails, userUpdatePayload);
+        return ResponseEntity.ok().body(updatedUser);
     }
 
     @Operation(
