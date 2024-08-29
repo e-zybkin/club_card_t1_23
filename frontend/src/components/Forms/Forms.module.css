@@ -1,9 +1,16 @@
-.main {
+.form {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-top: 50px;
+  gap: 20px;
+  margin-top: 25px;
+}
+
+.field {
+	margin-bottom: 10px;
+}
+
+.headers {
+  margin: 0;
 }
 
 .card {
@@ -15,9 +22,8 @@
   background-size:cover;
   position: relative;
   border-radius: 20px;
-  background-color: #00aae6;
   color: white;
-  margin-bottom: 10px; /* убрать */
+  margin-bottom: 10px;
 }
 
 .stripe {
@@ -84,12 +90,28 @@
 }
 
 .logo-first-case {
+  top: 17px;
+  right: 24px;
+}
+
+.logo-second-case {
   top: 50%;
   right: 50%;
   transform: translateX(50%) translateY(-50%);
 }
 
-.logo-second-case {
-  top: 17px;
-  right: 24px;
+.logo-third-case {
+  left: 26px;
+  bottom: 20px;
+}
+
+.colors {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.color-box {
+  width: 20px;
+  height: 20px;
 }

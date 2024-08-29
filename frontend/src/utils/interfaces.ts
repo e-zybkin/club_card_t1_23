@@ -1,20 +1,22 @@
 import { Dispatch, SetStateAction } from "react";
 import { UserRoles, UserPriveleges } from "./enums"
+import { CardColors, CardTemplates } from "./enums";
 
 export interface UserLogin {
-  username: string,
+  email: string,
   password: string
 }
 
 export interface UserRegister {
-  username: string,
+  firstName: string,
+  lastName: string,
+  middleName: string,
   email: string,
   password: string,
 }
 
 export interface User {
   id: number,
-  username: string,
   password: string,
   email: string,
   firstName: string,
@@ -23,10 +25,9 @@ export interface User {
   dateOfBirth: Date,
   role: UserRoles,
   privilege: UserPriveleges,
-  card: Card
 }
 
-export interface Card {
+export interface CardData {
   id: number,
   number: string,
   openingDate: string,
@@ -34,6 +35,9 @@ export interface Card {
   cvcCode: number,
   bonuses: number,
   isBlocked: boolean
+  colour: CardColors,
+  template: CardTemplates,
+  qrCode: string;
 }
 
 export interface CurrentUserContextType {
@@ -47,7 +51,6 @@ export interface UserUpdate {
   firstName: string;
   lastName: string;
   middleName: string;
-  username: string;
   email: string;
   birthday: Date;
 }

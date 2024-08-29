@@ -19,19 +19,19 @@ const getJson = (response) => {
   });
 };
 
-export const register = ({ password, email, username }: UserRegister) => {
+export const register = ({ password, email, firstName, lastName, middleName }: UserRegister) => {
   return fetch(`${BASE_URL}/auth/signup`, {
     method: "POST",
     headers: HEADERS,
-    body: JSON.stringify({ password, email, username }),
+    body: JSON.stringify({ password, email, firstName, lastName, middleName }),
   }).then(getJson);
 };
 
-export const authorize = ({ username, password } : UserLogin) => {
+export const authorize = ({ email, password } : UserLogin) => {
   return fetch(`${BASE_URL}/auth/login`, {
     method: "POST",
     headers: HEADERS,
-    body: JSON.stringify({ username, password }),
+    body: JSON.stringify({ email, password }),
   }).then(getJson);
 };
 
@@ -56,7 +56,6 @@ export const updUserData = (data: UserUpdate) => {
       firstName: data.firstName,
       lastName: data.lastName,
       middleName: data.middleName,
-      username: data.username,
       email: data.email,
       dateOfBirth: data.birthday,
     }),

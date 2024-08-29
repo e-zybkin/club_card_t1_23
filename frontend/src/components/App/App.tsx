@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 
 import Header from "../Header/Header";
 import Main from "../Main/Main";
@@ -8,33 +8,41 @@ import Login from "../Login/Login";
 import PageNotFound from "../PageNotFound/PageNotFound";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import InfoPopup from "../InfoPopup/InfoPopup";
-import PopupEditUser from "../PopupEditUser/PopupEditUser";
+import PopupEditUser from "../Popups/PopupEditUser";
+import PopupCreateCard from "../Popups/PopupCreateCard";
 import Loader from "../Loader/Loader";
+import { UsersList } from "../UsersList/UsersList";
 
 import {
   UserLogin,
   UserRegister,
   User,
   UserUpdate,
+  CardData,
 } from "../../utils/interfaces";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 import * as userApi from "../../utils/api/auth";
+import * as cardApi from "../../utils/api/card";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeflex/primeflex.css";
 import styles from "./App.module.css";
+import { CardColors, CardTemplates } from "../../utils/enums";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<
     User | Record<PropertyKey, never>
   >({});
+  const [cardData, setCardData] = useState<CardData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   const [isInfoPopupOpen, setIsInfoPopupOpen] = useState<boolean>(false);
   const [isPopupEditUserOpen, setIsPopupEditUserOpen] =
+    useState<boolean>(false);
+  const [isPopupCreateCardOpen, setIsPopupCreateCardOpen] =
     useState<boolean>(false);
 
   const [isPopupSuccess, setIsPopupSuccess] = useState<boolean>(false);
@@ -58,6 +66,7 @@ function App() {
         .then((res) => {
           if (res) {
             setLoggedIn(true);
+            navigate("/");
           }
         })
         .catch((err) => {
@@ -72,7 +81,15 @@ function App() {
         .getMyInfo()
         .then((result) => {
           setCurrentUser(result);
-          navigate("/");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      cardApi
+        .getCardInfo()
+        .then((result) => {
+          setCardData(result);
         })
         .catch((err) => {
           console.log(err);
@@ -100,7 +117,7 @@ function App() {
     setIsLoading(true);
     try {
       await userApi.register(data);
-      handleLogin({ username: data.username, password: data.password });
+      handleLogin({ email: data.email, password: data.password });
       navigate("/sign-in");
     } catch (err) {
       console.log(err);
@@ -116,24 +133,38 @@ function App() {
     userApi
       .updUserData(userData)
       .then((result) => {
-        console.log(result);
-        // setCurrentUser({
-        //   _id: result.data._id,
-        //   name: result.data.name,
-        //   email: result.data.email,
-        //   role: result.data.role,
-        // });
+        setCurrentUser(result);
 
         setIsPopupEditUserOpen(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         setIsPopupEditUserOpen(false);
         setIsPopupSuccess(false);
         setIsInfoPopupOpen(true);
       })
       .finally(() => {
         setIsLoading(false);
-        setIsPopupEditUserOpen(false);
+        closeAllPopups();
+      });
+  };
+
+  const handleCreateCard = (
+    colorName: keyof typeof CardColors,
+    templateName: keyof typeof CardTemplates
+  ) => {
+    setIsLoading(true);
+    cardApi
+      .createCard(colorName, templateName)
+      .then((res) => {
+        setCardData(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+        closeAllPopups();
       });
   };
 
@@ -141,12 +172,14 @@ function App() {
     localStorage.removeItem("jwt");
     setLoggedIn(false);
     setCurrentUser({});
+    setCardData(null);
     navigate("/signin");
   };
 
   const closeAllPopups = (): void => {
     setIsInfoPopupOpen(false);
     setIsPopupEditUserOpen(false);
+    setIsPopupCreateCardOpen(false);
   };
 
   return (
@@ -156,15 +189,53 @@ function App() {
           <Header signOut={signOut} editUser={setIsPopupEditUserOpen} />
 
           <Routes>
-            <Route path="/" element={<ProtectedRoute children={<Main />} />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute
+                  children={
+                    <Main
+                      card={cardData}
+                      createCard={setIsPopupCreateCardOpen}
+                    />
+                  }
+                />
+              }
+            />
+
+            {/* <Route
+              path="/users"
+              element={
+                <ProtectedRoute
+                  children={
+                    <UsersList
+                      getAllUsers={handleGetAllUsers}
+                      users={allUsers}
+                      onChangeRole={handleChangeRole}
+                      onDeleteUser={openDeleteUserPopup}
+                    />
+                  }
+                />
+              }
+            /> */}
+
             <Route
               path="/signup"
               element={<Register handleRegister={handleRegister} />}
             />
+
             <Route
               path="/signin"
               element={<Login handleLogin={handleLogin} />}
             />
+
+            <Route
+              path="/"
+              element={
+                loggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in" />
+              }
+            />
+
             <Route path="*" element={<PageNotFound />} />
           </Routes>
 
@@ -175,9 +246,15 @@ function App() {
           />
 
           <PopupEditUser
-            isOpen={isPopupEditUserOpen}
+            visible={isPopupEditUserOpen}
             onClose={closeAllPopups}
             onSubmit={handleUpdateUser}
+          />
+
+          <PopupCreateCard
+            visible={isPopupCreateCardOpen}
+            onClose={closeAllPopups}
+            onSubmit={handleCreateCard}
           />
         </div>
         <Loader isLoading={isLoading} />

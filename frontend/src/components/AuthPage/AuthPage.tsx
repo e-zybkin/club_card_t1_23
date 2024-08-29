@@ -7,7 +7,6 @@ interface props {
   name: string;
   reg: boolean;
   submitText: string;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   children: React.ReactNode;
 }
 
@@ -15,12 +14,7 @@ function AuthPage(props: props) {
   return (
     <section className={styles["auth-page"]}>
       <h3 className={styles.title}>{props.title}</h3>
-      <form className={styles.form} name={props.name} onSubmit={props.onSubmit}>
-        {props.children}
-        <button type="submit" className={`${styles.button} buttons`}>
-          {props.submitText}
-        </button>
-      </form>
+      {props.children}
       {props.reg ? (
         <div className={styles.teleport}>
           <p className={styles.hint}>Уже зарегистрированы?</p>
