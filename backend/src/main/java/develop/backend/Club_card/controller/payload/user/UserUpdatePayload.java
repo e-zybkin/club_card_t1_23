@@ -6,9 +6,6 @@ import java.util.Date;
 
 public record UserUpdatePayload(
 
-        @NotNull(message = "{validation.errors.id.is.null}")
-        Integer id,
-
         @NotBlank(message = "{validation.errors.email.is.blank}")
         @Pattern(
                 regexp = "^[a-zA-Z0-9.-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
