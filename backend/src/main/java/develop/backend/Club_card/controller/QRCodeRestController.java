@@ -1,6 +1,7 @@
 package develop.backend.Club_card.controller;
 
 import com.google.zxing.WriterException;
+import develop.backend.Club_card.controller.payload.user.UserIdPayload;
 import develop.backend.Club_card.controller.payload.user.UserNamePayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.exception.CustomException;
@@ -70,7 +71,7 @@ public class QRCodeRestController {
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @PostMapping("generate")
     public ResponseEntity<Map<String, String>> generateQRCodeForAdmin(@AuthenticationPrincipal UserDetails userDetails,
-                                                                      @Valid @RequestBody UserNamePayload usernamePayload,
+                                                                      @Valid @RequestBody UserIdPayload userIdPayload,
                                                                       BindingResult bindingResult) throws BindException {
 
         if (bindingResult.hasErrors()) {
@@ -81,7 +82,7 @@ public class QRCodeRestController {
             throw new BindException(bindingResult);
         }
 
-        Optional<User> mayBeUser = userRepository.findUserByUsername(usernamePayload.username());
+        Optional<User> mayBeUser = userRepository.findById(userIdPayload.id());
 
         if (mayBeUser.isEmpty()) {
             throw new CustomException(this.messageSource.getMessage(

@@ -4,6 +4,7 @@ import develop.backend.Club_card.controller.payload.user.UserLogInPayload;
 import develop.backend.Club_card.controller.payload.user.UserSignUpPayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.service.UserAuthService;
+import develop.backend.Club_card.service.impl.EmailServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Tag(name = "user_auth_endpoints")
 @RestController
@@ -28,6 +30,7 @@ import java.util.Map;
 public class UserAuthRestController {
 
     private final UserAuthService userAuthService;
+    private final EmailServiceImpl emailService;
 
     @Operation(
             summary = "Аутентификация пользователя",
@@ -89,6 +92,8 @@ public class UserAuthRestController {
         }
 
         User user = userAuthService.signup(userSignUpPayload);
+
+        emailService.sendVerificationEmail(user, "checkForToken");
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "email", user.getEmail()

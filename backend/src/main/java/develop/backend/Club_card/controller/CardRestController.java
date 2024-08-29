@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CardRestController {
 
     private final CardServiceImpl cardService;
-    private final CardRepository cardRepository;
     private final UserServiceImpl userService;
 
 
@@ -57,7 +56,7 @@ public class CardRestController {
         @AuthenticationPrincipal UserDetails userDetails
     ) {
 
-        Card card = cardRepository.findCardByUser(userService.getCurrentUser(userDetails));
+        Card card = userService.getCurrentUser(userDetails).getCard();
 
         return new ResponseEntity<>(card, HttpStatus.OK);
     }

@@ -33,7 +33,7 @@ public class CardServiceImpl implements CardService {
 
     public Card createCard(UserDetails userDetails,
                            CreationCardPayload creationCardPayload){
-        User user = userRepository.findUserByUsername(userDetails.getUsername())
+        User user = userRepository.findUserByEmail(userDetails.getUsername())
             .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
                 "security.auth.errors.username.not.found", null, Locale.getDefault()
             ), HttpStatus.NOT_FOUND));
@@ -42,14 +42,14 @@ public class CardServiceImpl implements CardService {
 
         Integer cvc = Math.toIntExact(CardService.generateRandomNumber(3));
         long number = CardService.generateRandomNumber(16);
-        Date currentDate = new Date();
+        Date currentDate = new Date(System.currentTimeMillis());
 
         card.setOpeningDate(currentDate);
+        card.setDateOfExpiration(new Date(System.currentTimeMillis() + 86400000*3)); // 3 суток
         card.setCvcCode(cvc);
         card.setNumber(number);
         card.setScore(0);
         card.setIsBlocked(false);
-        card.setUser(user);
         card.setColour(switch (creationCardPayload.colour()){
             case "BLUE" -> CardColoursEnum.BLUE;
             case "RED" -> CardColoursEnum.RED;
@@ -66,6 +66,7 @@ public class CardServiceImpl implements CardService {
                 "validation.errors.pattern.does.not.exist", null, Locale.getDefault()
             ), HttpStatus.UNPROCESSABLE_ENTITY);
         });
+        card.setQrCode("waiting");
 
         cardRepository.save(card);
 
