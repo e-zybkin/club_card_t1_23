@@ -1,12 +1,15 @@
 package develop.backend.Club_card.controller;
 
 import develop.backend.Club_card.TestBeans;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -14,13 +17,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = TestBeans.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureMockMvc
-public class UserAuthController {
+public class UserAuthRestControllerTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
+    @Order(1)
     public void signUpWithValidRequestReturnsValidData() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -38,6 +43,7 @@ public class UserAuthController {
     }
 
     @Test
+    @Order(2)
     public void signUpWithInvalidEmailReturnsBadRequest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -54,24 +60,8 @@ public class UserAuthController {
     }
 
     @Test
-    @Sql("/sql/add_user.sql")
+    @Order(3)
     public void signUpWithExistingEmailReturnsUnprocessableEntity() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("""
-                    {
-                        "firstName": "Игорь",
-                        "lastName": "Николаев",
-                        "middleName": "Игоревич",
-                        "email": "example@gmail.com",
-                        "password": "123456"
-                    }
-                """))
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    public void signUpAndLoginWithValidRequest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -83,9 +73,12 @@ public class UserAuthController {
                                 "password": "123456"
                             }
                         """))
-                .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"));
+                .andExpect(status().isUnprocessableEntity());
+    }
 
+    @Test
+    @Order(4)
+    public void LoginWithValidRequest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
