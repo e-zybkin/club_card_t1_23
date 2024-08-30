@@ -15,8 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,8 +49,17 @@ public class CardRestController {
     @PostMapping("create")
     public ResponseEntity<?> createCard(
         @AuthenticationPrincipal UserDetails userDetails,
-        @Valid @RequestBody CreationCardPayload creationCardPayload
-    ) {
+        @Valid @RequestBody CreationCardPayload creationCardPayload,
+        BindingResult bindingResult
+    ) throws BindException {
+
+        if (bindingResult.hasErrors()) {
+            if (bindingResult instanceof BindException exception) {
+                throw exception;
+            }
+
+            throw new BindException(bindingResult);
+        }
 
         Card card = cardService.createCard(userDetails, creationCardPayload);
 
@@ -94,5 +106,29 @@ public class CardRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(
+        summary = "Разблокировка карты",
+        description =
+            "Разблокировка карты, доступная админу и суперадмину."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Карта успешно разблокирована"),
+        @ApiResponse(responseCode = "422", description = "Невозможно выполнить операцию. Карта уже разблокирована"),
+    })
+    @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
+    @PatchMapping("unblock")
+    public ResponseEntity<?> unblockCard(
+        @AuthenticationPrincipal UserDetails userDetails
+    ){
+        Card card = userService.getCurrentUser(userDetails).getCard();
+        if(!card.getIsBlocked())
+            throw new CustomException(this.messageSource.getMessage(
+                "card.error.unblock.already.done", null, Locale.getDefault()
+            ), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        card.setIsBlocked(false);
+        cardRepository.save(card);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }

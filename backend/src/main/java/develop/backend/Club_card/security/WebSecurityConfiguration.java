@@ -70,6 +70,7 @@ public class WebSecurityConfiguration {
                         .requestMatchers("/v3/api-docs/**").permitAll()
                         .requestMatchers("club-card/api/manager/**").hasAnyRole("OWNER", "MANAGER")
                         .requestMatchers(HttpMethod.POST,"club-card/api/qr/generate").hasAnyRole("OWNER","MANAGER")
+                        .requestMatchers(HttpMethod.PATCH,"club-card/api/card/unblock").hasAnyRole("OWNER","MANAGER")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

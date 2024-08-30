@@ -71,4 +71,49 @@ public class UserCardRestControllerTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @Order(2)
+    public void signUpThenLoginThenCreateCardForUserReturnsFail() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                         "firstName": "Исаев",
+                         "lastName": "Иванов",
+                         "middleName": "Иванович",
+                         "email": "isaev@gmail.com",
+                         "password": "123456"
+                    }
+                """))
+            .andExpect(status().isCreated())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                        "email": "ivanov@gmail.com",
+                        "password": "123456"
+                    }
+                """))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseBody = result.getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        String bearerToken = jsonNode.get("token").asText();
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/card/create")
+                .header("Authorization", "Bearer " + bearerToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                        "colour": "YELLOW",
+                        "pattern": "FULL"
+                    }
+                """))
+            .andExpect(status().isBadRequest());
+    }
+
 }
