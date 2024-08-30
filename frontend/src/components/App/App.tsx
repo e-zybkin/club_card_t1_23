@@ -7,11 +7,11 @@ import Register from "../Register/Register";
 import Login from "../Login/Login";
 import PageNotFound from "../PageNotFound/PageNotFound";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
-import InfoPopup from "../InfoPopup/InfoPopup";
 import PopupEditUser from "../Popups/PopupEditUser";
 import PopupCreateCard from "../Popups/PopupCreateCard";
 import Loader from "../Loader/Loader";
-import { UsersList } from "../UsersList/UsersList";
+// import { UsersList } from "../UsersList/UsersList";
+import { PopupDialog } from "../Popups/PopupDialog";
 
 import {
   UserLogin,
@@ -30,6 +30,7 @@ import "primereact/resources/primereact.min.css";
 import "primeflex/primeflex.css";
 import styles from "./App.module.css";
 import { CardColors, CardTemplates } from "../../utils/enums";
+import { PopupQR } from "../Popups/PopupQR";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<
@@ -39,13 +40,15 @@ function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
-  const [isInfoPopupOpen, setIsInfoPopupOpen] = useState<boolean>(false);
   const [isPopupEditUserOpen, setIsPopupEditUserOpen] =
     useState<boolean>(false);
   const [isPopupCreateCardOpen, setIsPopupCreateCardOpen] =
     useState<boolean>(false);
+  const [isPopupQrOpen, setIsQrPopupOpen] = useState<boolean>(false);
 
-  const [isPopupSuccess, setIsPopupSuccess] = useState<boolean>(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const [isDialogError, setIsDialogError] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -97,6 +100,17 @@ function App() {
     }
   }, [loggedIn]);
 
+  const showDialog = (message: string, status: boolean) => {
+    setDialogMessage(message);
+    if (status === false) {
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 1200);
+    }
+    setIsDialogError(status);
+    setShowMessage(true);
+  };
+
   const handleLogin = async (data: UserLogin): Promise<void> => {
     setIsLoading(true);
     try {
@@ -104,10 +118,9 @@ function App() {
       localStorage.setItem("jwt", res.token);
       setLoggedIn(true);
       navigate("/");
+      showDialog("Вы успешно вошли!", false);
     } catch (err) {
-      console.log(err);
-      setIsPopupSuccess(false);
-      setIsInfoPopupOpen(true);
+      showDialog(err?.message, true);
     } finally {
       setIsLoading(false);
     }
@@ -120,9 +133,7 @@ function App() {
       handleLogin({ email: data.email, password: data.password });
       navigate("/sign-in");
     } catch (err) {
-      console.log(err);
-      setIsPopupSuccess(false);
-      setIsInfoPopupOpen(true);
+      showDialog(err?.message, true);
     } finally {
       setIsLoading(false);
     }
@@ -138,10 +149,8 @@ function App() {
         setIsPopupEditUserOpen(false);
       })
       .catch((err) => {
-        console.log(err);
         setIsPopupEditUserOpen(false);
-        setIsPopupSuccess(false);
-        setIsInfoPopupOpen(true);
+        showDialog(err?.message, true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -160,7 +169,7 @@ function App() {
         setCardData(res);
       })
       .catch((err) => {
-        console.log(err);
+        showDialog(err?.message, true);
       })
       .finally(() => {
         setIsLoading(false);
@@ -177,9 +186,10 @@ function App() {
   };
 
   const closeAllPopups = (): void => {
-    setIsInfoPopupOpen(false);
     setIsPopupEditUserOpen(false);
     setIsPopupCreateCardOpen(false);
+    setShowMessage(false);
+    setIsQrPopupOpen(false);
   };
 
   return (
@@ -197,6 +207,7 @@ function App() {
                     <Main
                       card={cardData}
                       createCard={setIsPopupCreateCardOpen}
+                      openQr={setIsQrPopupOpen}
                     />
                   }
                 />
@@ -239,10 +250,11 @@ function App() {
             <Route path="*" element={<PageNotFound />} />
           </Routes>
 
-          <InfoPopup
-            isOpen={isInfoPopupOpen}
+          <PopupDialog
+            visible={showMessage}
             onClose={closeAllPopups}
-            isSuccess={isPopupSuccess}
+            isDialogError={isDialogError}
+            dialogMessage={dialogMessage}
           />
 
           <PopupEditUser
@@ -255,6 +267,12 @@ function App() {
             visible={isPopupCreateCardOpen}
             onClose={closeAllPopups}
             onSubmit={handleCreateCard}
+          />
+
+          <PopupQR
+            visible={isPopupQrOpen}
+            onClose={closeAllPopups}
+            card={cardData}
           />
         </div>
         <Loader isLoading={isLoading} />
