@@ -45,6 +45,24 @@
   width: 100px;
   height: 100px;
   background-color: white;
+  transition: box-shadow 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+@keyframes blinkShadow {
+  0% {
+    box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+  }
+}
+
+.code:hover {
+  animation: blinkShadow 1.2s infinite;
 }
 
 .number {

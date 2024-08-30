@@ -1,17 +1,16 @@
-import { Dispatch, SetStateAction } from "react";
 import { Dialog } from "primereact/dialog";
 import { Button } from "primereact/button";
 
 interface props {
-  showMessage: boolean;
-  setShowMessage: Dispatch<SetStateAction<boolean>>;
+  visible: boolean;
+  onClose: () => void;
   isDialogError: boolean;
   dialogMessage: string;
 }
 
 export function PopupDialog({
-  showMessage,
-  setShowMessage,
+  visible,
+  onClose,
   isDialogError,
   dialogMessage,
 }: props) {
@@ -21,15 +20,15 @@ export function PopupDialog({
         label="OK"
         className="p-button-text"
         autoFocus
-        onClick={() => setShowMessage(false)}
+        onClick={onClose}
       />
     </div>
   );
 
   return (
     <Dialog
-      visible={showMessage}
-      onHide={() => setShowMessage(false)}
+      visible={visible}
+      onHide={onClose}
       footer={isDialogError ? dialogFooter : ""}
       showHeader={false}
       breakpoints={{ "960px": "80vw" }}

@@ -30,6 +30,7 @@ import "primereact/resources/primereact.min.css";
 import "primeflex/primeflex.css";
 import styles from "./App.module.css";
 import { CardColors, CardTemplates } from "../../utils/enums";
+import { PopupQR } from "../Popups/PopupQR";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<
@@ -43,6 +44,7 @@ function App() {
     useState<boolean>(false);
   const [isPopupCreateCardOpen, setIsPopupCreateCardOpen] =
     useState<boolean>(false);
+  const [isPopupQrOpen, setIsQrPopupOpen] = useState<boolean>(false);
 
   const [showMessage, setShowMessage] = useState(false);
   const [isDialogError, setIsDialogError] = useState(false);
@@ -186,6 +188,8 @@ function App() {
   const closeAllPopups = (): void => {
     setIsPopupEditUserOpen(false);
     setIsPopupCreateCardOpen(false);
+    setShowMessage(false);
+    setIsQrPopupOpen(false);
   };
 
   return (
@@ -203,6 +207,7 @@ function App() {
                     <Main
                       card={cardData}
                       createCard={setIsPopupCreateCardOpen}
+                      openQr={setIsQrPopupOpen}
                     />
                   }
                 />
@@ -246,8 +251,8 @@ function App() {
           </Routes>
 
           <PopupDialog
-            showMessage={showMessage}
-            setShowMessage={setShowMessage}
+            visible={showMessage}
+            onClose={closeAllPopups}
             isDialogError={isDialogError}
             dialogMessage={dialogMessage}
           />
@@ -262,6 +267,12 @@ function App() {
             visible={isPopupCreateCardOpen}
             onClose={closeAllPopups}
             onSubmit={handleCreateCard}
+          />
+
+          <PopupQR
+            visible={isPopupQrOpen}
+            onClose={closeAllPopups}
+            card={cardData}
           />
         </div>
         <Loader isLoading={isLoading} />
