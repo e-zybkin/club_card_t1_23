@@ -46,7 +46,8 @@ public class ManagerServiceImpl implements ManagerService {
                         user.getLastName(),
                         user.getMiddleName(),
                         user.getRole().getRoleInString(),
-                        user.getPrivilege().getPrivilegeInString()
+                        user.getPrivilege().getPrivilegeInString(),
+                        user.getDateOfBirth()
                 ));
             }
         }
@@ -68,7 +69,8 @@ public class ManagerServiceImpl implements ManagerService {
                         user.getLastName(),
                         user.getMiddleName(),
                         user.getRole().getRoleInString(),
-                        user.getPrivilege().getPrivilegeInString()
+                        user.getPrivilege().getPrivilegeInString(),
+                        user.getDateOfBirth()
                 ));
             }
         }

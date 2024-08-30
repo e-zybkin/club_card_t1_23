@@ -1,9 +1,8 @@
 package develop.backend.Club_card.controller.payload.user;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+
+import java.util.Date;
 
 public record GetUserPayload(
 
@@ -36,6 +35,10 @@ public record GetUserPayload(
                 regexp = "PRIVILEGE_STANDARD|PRIVILEGE_HIGH|PRIVILEGE_VIP",
                 message = "{validation.errors.privilege.does.not.exist}"
         )
-        String privilege
+        String privilege,
+
+        @NotNull(message = "{validation.errors.date.of.birth.is.null}")
+        @PastOrPresent(message = "{validation.errors.date.of.birth.is.in.future}")
+        Date dateOfBirth
 ) {
 }

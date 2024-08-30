@@ -50,7 +50,8 @@ public class UserRestController {
                 user.getLastName(),
                 user.getMiddleName(),
                 user.getRole().getRoleInString(),
-                user.getPrivilege().getPrivilegeInString()
+                user.getPrivilege().getPrivilegeInString(),
+                user.getDateOfBirth()
         ));
     }
 
