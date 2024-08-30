@@ -40,5 +40,7 @@ public record GetUserPayload(
         @NotNull(message = "{validation.errors.date.of.birth.is.null}")
         @PastOrPresent(message = "{validation.errors.date.of.birth.is.in.future}")
         Date dateOfBirth
+
+
 ) {
 }
