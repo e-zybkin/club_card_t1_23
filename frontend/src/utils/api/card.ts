@@ -45,3 +45,23 @@ export const getCardInfo = () => {
     }
   }).then(getJson);
 }
+
+export const blockCard = () => {
+  return fetch(`${BASE_URL}/block`, {
+    method: "PATCH",
+    headers: {
+      ...HEADERS,
+      Authorization: getToken()
+    }
+  }).then(getJson)
+}
+
+export const unblockCard = () => {
+  return fetch(`${BASE_URL}/unblock`, {
+    method: 'PATCH',
+    headers: {
+      ...HEADERS,
+      Authorization: getToken()
+    }
+  }).then(getJson)
+}

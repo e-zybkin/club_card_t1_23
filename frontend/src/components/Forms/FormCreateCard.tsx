@@ -100,10 +100,10 @@ function FormCreateCard({ onSubmit }: props) {
                 {value === CardTemplates.FULL && (
                   <p className={styles.number}>0000 0000 0000 0000</p>
                 )}
-                {value === CardTemplates.FULL ||
-                  (value === CardTemplates.MIDDLE && (
-                    <p className={styles.date}>12/25</p>
-                  ))}
+                {(value === CardTemplates.FULL ||
+                  value === CardTemplates.MIDDLE) && (
+                  <p className={styles.date}>12/25</p>
+                )}
               </div>
             </label>
           </div>

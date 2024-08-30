@@ -29,14 +29,14 @@ export interface User {
 
 export interface CardData {
   id: number,
-  number: string,
+  number: number,
   openingDate: string,
   dateOfExpiration: string,
   cvcCode: number,
   bonuses: number,
   isBlocked: boolean
   colour: CardColors,
-  template: CardTemplates,
+  pattern: CardTemplates,
   qrCode: string;
 }
 

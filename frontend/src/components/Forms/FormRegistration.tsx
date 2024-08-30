@@ -3,6 +3,7 @@ import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Password } from "primereact/password";
 import { Divider } from "primereact/divider";
+import { Checkbox } from "primereact/checkbox";
 import { UserRegister } from "../../utils/interfaces";
 import { classNames as cn } from "primereact/utils";
 import styles from "./Forms.module.css";
@@ -13,10 +14,13 @@ interface props {
 
 export function FormRegistration({ handleRegister }: props) {
   const defaultValues = {
-    initials: "",
+    firstName: "",
+    lastName: "",
+    middleName: "",
     email: "",
     password: "",
     confirmPassword: "",
+    confirmPrivacy: false,
   };
 
   const {
@@ -28,16 +32,18 @@ export function FormRegistration({ handleRegister }: props) {
   } = useForm({ defaultValues, mode: "onChange" });
 
   const onSubmit = (data: {
-    initials: string;
+    firstName: string;
+    lastName: string;
+    middleName: string;
     email: string;
     password: string;
     confirmPassword: string;
+    confirmPrivacy: boolean;
   }) => {
-    const FIO = data.initials.split(" ");
     handleRegister({
-      firstName: FIO[1],
-      lastName: FIO[0],
-      middleName: FIO[2],
+      firstName: data.firstName,
+      lastName: data.lastName,
+      middleName: data.middleName,
       email: data.email,
       password: data.password,
     });
@@ -73,17 +79,17 @@ export function FormRegistration({ handleRegister }: props) {
       <div className={styles.field}>
         <span className="p-float-label p-input-icon-right">
           <Controller
-            name="initials"
+            name="firstName"
             control={control}
             rules={{
-              required: "Обязательное поле ФИО.",
+              required: "Обязательное поле Имя.",
               minLength: {
-                value: 20,
-                message: "ФИО должно содержать не менее 20 символов",
+                value: 2,
+                message: "Имя должно содержать не менее 2 символов",
               },
               maxLength: {
-                value: 50,
-                message: "ФИО не должно содержать более 50 символов",
+                value: 20,
+                message: "Имя не должно содержать более 20 символов",
               },
             }}
             render={({ field, fieldState }) => (
@@ -99,12 +105,86 @@ export function FormRegistration({ handleRegister }: props) {
           />
           <label
             htmlFor="initials"
-            className={cn({ "p-error": !!errors.initials })}
+            className={cn({ "p-error": !!errors.firstName })}
           >
-            ФИО*
+            Имя*
           </label>
         </span>
-        {getFormErrorMessage("initials")}
+        {getFormErrorMessage("firstName")}
+      </div>
+
+      <div className={styles.field}>
+        <span className="p-float-label p-input-icon-right">
+          <Controller
+            name="lastName"
+            control={control}
+            rules={{
+              required: "Обязательное поле Фамилия.",
+              minLength: {
+                value: 2,
+                message: "Фамилия должна содержать не менее 2 символов",
+              },
+              maxLength: {
+                value: 20,
+                message: "Фамилия не должна содержать более 20 символов",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <InputText
+                id={field.name}
+                {...field}
+                autoFocus
+                className={cn({
+                  "p-invalid": fieldState.invalid,
+                })}
+              />
+            )}
+          />
+          <label
+            htmlFor="initials"
+            className={cn({ "p-error": !!errors.lastName })}
+          >
+            Фамилия*
+          </label>
+        </span>
+        {getFormErrorMessage("lastName")}
+      </div>
+
+      <div className={styles.field}>
+        <span className="p-float-label p-input-icon-right">
+          <Controller
+            name="middleName"
+            control={control}
+            rules={{
+              required: "Обязательное поле Отчество.",
+              minLength: {
+                value: 2,
+                message: "Отчество должно содержать не менее 2 символов",
+              },
+              maxLength: {
+                value: 20,
+                message: "Отчество не должно содержать более 20 символов",
+              },
+            }}
+            render={({ field, fieldState }) => (
+              <InputText
+                id={field.name}
+                {...field}
+                autoFocus
+                className={cn({
+                  "p-invalid": fieldState.invalid,
+                })}
+              />
+            )}
+          />
+          <label
+            htmlFor="initials"
+            className={cn({ "p-error": !!errors.middleName })}
+          >
+            Отчество*
+          </label>
+        </span>
+        {getFormErrorMessage("middleName")}
       </div>
       <div className={styles.field}>
         <span className="p-float-label p-input-icon-right">
@@ -115,7 +195,7 @@ export function FormRegistration({ handleRegister }: props) {
               required: "Обязательное поле Email.",
               pattern: {
                 value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                message: "Не корректный email. Например: example@email.ru",
+                message: "Некорректный email. Например: example@email.ru",
               },
             }}
             render={({ field, fieldState }) => (
@@ -144,12 +224,12 @@ export function FormRegistration({ handleRegister }: props) {
             //   required: "Обязательное поле Пароль.",
             //   maxLength: {
             //     value: 40,
-            //     message: "Максимальная длина 40 символа.",
+            //     message: "Максимальная длина 40 символов.",
             //   },
-            //   // pattern: {
-            //   //   value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,42})/,
-            //   //   message: "Не корректный пароль",
-            //   // },
+            //   pattern: {
+            //     value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,42})/,
+            //     message: "Некорректный пароль",
+            //   },
             // }}
             render={({ field, fieldState }) => (
               <Password
@@ -166,7 +246,7 @@ export function FormRegistration({ handleRegister }: props) {
           />
           <label
             htmlFor="password"
-            className={cn({ "p-error": errors.password })}
+            className={cn({ "p-error": !!errors.password })}
           >
             Пароль*
           </label>
@@ -197,12 +277,43 @@ export function FormRegistration({ handleRegister }: props) {
           />
           <label
             htmlFor="confirmPassword"
-            className={cn({ "p-error": errors.confirmPassword })}
+            className={cn({ "p-error": !!errors.confirmPassword })}
           >
             Повторите пароль*
           </label>
         </span>
         {getFormErrorMessage("confirmPassword")}
+      </div>
+
+      <div className={styles.field}>
+        <span className="p-float-label">
+          <Controller
+            name="confirmPrivacy"
+            control={control}
+            rules={{ required: "Необходимо согласие." }}
+            render={({ field, fieldState }) => (
+              <div className={styles.checkbox}>
+                <Checkbox
+                  id={field.name}
+                  {...field}
+                  checked={field.value}
+                  className={cn({
+                    "p-invalid": fieldState.invalid,
+                  })}
+                />
+                <p className={styles.privacy}>
+                  Нажимая кнопку "Зарегистрироваться", я даю своё согласие на
+                  обработку моих персональных данных, в соответствии с
+                  Федеральным законом{" "}
+                  <a href="http://pravo.gov.ru/proxy/ips/?docbody&nd=102108261">
+                    №152-ФЗ "О персональных данных"
+                  </a>
+                </p>
+              </div>
+            )}
+          />
+        </span>
+        {getFormErrorMessage("confirmPrivacy")}
       </div>
 
       <Button
