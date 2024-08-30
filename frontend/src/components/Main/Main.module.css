@@ -3,7 +3,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: 50px;
+  padding-top: 40px;
 }
 
 .create {
@@ -24,4 +24,15 @@
 
 .submit {
   background-color: #88f657;
+}
+
+.btnBlock {
+  background-color: #ff2969;
+}
+
+.cardBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }

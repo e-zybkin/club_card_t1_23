@@ -13,13 +13,29 @@ interface props {
   card: CardData | null;
   createCard: Dispatch<SetStateAction<boolean>>;
   openQr: Dispatch<SetStateAction<boolean>>;
+  blockCard: Dispatch<SetStateAction<boolean>>;
 }
 
-function Main({ card, createCard, openQr }: props) {
+function Main({ card, createCard, openQr, blockCard }: props) {
   return (
     <main className={styles.main}>
       {card ? (
-        <Card card={card} openQr={openQr}></Card>
+        <div className={styles.cardBox}>
+          {card.isBlocked ? (
+            <div className={styles.blockedMessage}>
+              <h2 className={styles.title}>Ваша карта заблокирована</h2>
+            </div>
+          ) : (
+            <>
+              <Card card={card} openQr={openQr} />
+              <Button
+                className={`${styles.btnBlock} buttons`}
+                label="Заблокировать карту"
+                onClick={() => blockCard(true)}
+              />
+            </>
+          )}
+        </div>
       ) : (
         <div className={styles.create}>
           <img className={styles.picture} src={main} alt="Красивая картинка" />
