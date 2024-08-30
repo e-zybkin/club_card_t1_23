@@ -51,6 +51,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserPrivilegesEnum privilege;
 
+    @Column(name = "email_verification_token", nullable = false)
+    private String emailVerificationToken;
+
+    @Column(name = "is_email_verified", nullable = false)
+    private Boolean isEmailVerified;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "card_id", referencedColumnName = "id")
     private Card card;
