@@ -10,6 +10,7 @@ import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.security.JwtTokenProvider;
 import develop.backend.Club_card.service.UserAuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserAuthServiceImpl implements UserAuthService {
 
     @Value("${security.auth.super.admin.email}")
@@ -40,6 +42,9 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     public User signup(UserSignUpPayload userSignUpPayload) {
+
+        log.info("Entered sign up user service method");
+
         String firstName = userSignUpPayload.firstName();
         String lastName = userSignUpPayload.lastName();
         String middleName = userSignUpPayload.middleName();
@@ -61,6 +66,8 @@ public class UserAuthServiceImpl implements UserAuthService {
             privilege = UserPrivilegesEnum.PRIVILEGE_VIP;
         }
 
+        log.info("Completed user service signup method");
+
         return userRepository.save(new User(
                 -1,
                 firstName,
@@ -80,6 +87,9 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     public AbstractMap.SimpleEntry<User, String> login(UserLogInPayload userLogInPayload) {
+
+        log.info("Entered user service login method");
+
         String email = userLogInPayload.email();
         String password = userLogInPayload.password();
 
@@ -91,9 +101,12 @@ public class UserAuthServiceImpl implements UserAuthService {
                             "security.auth.errors.email.not.found", null, Locale.getDefault()
                     ), HttpStatus.NOT_FOUND));
 
+            log.info("Completed user service login method");
+
             return new AbstractMap.SimpleEntry<>(user, jwtTokenProvider.createToken(email));
 
         } catch (CustomException ex) {
+            log.info("Catch authentication exception");
             throw new CustomException(ex.getMessage(), ex.getHttpStatus());
         }
     }

@@ -15,15 +15,6 @@ public record GetUserFromCurrencyServicePayload(
         )
         String email,
 
-        @NotBlank(message = "{validation.errors.first.name.is.blank}")
-        String firstName,
-
-        @NotBlank(message = "{validation.errors.last.name.is.blank}")
-        String lastName,
-
-        @NotBlank(message = "{validation.errors.middle.name.is.blank}")
-        String surname,
-
         @NotNull(message = "currency.interaction.errors.coins.are.null")
         BigDecimal coins
 ) {

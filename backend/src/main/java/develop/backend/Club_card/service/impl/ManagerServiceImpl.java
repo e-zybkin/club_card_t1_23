@@ -10,6 +10,7 @@ import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.ManagerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +23,7 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ManagerServiceImpl implements ManagerService {
 
     private final UserRepository userRepository;
@@ -29,6 +31,9 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public List<GetUserPayload> findAllUsers(UserDetails userDetails) {
+
+        log.info("Entered find all users manager service method");
+
         User requestSender = userRepository.findUserByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
                 "security.auth.errors.email.not.found", null, Locale.getDefault()
@@ -52,11 +57,16 @@ public class ManagerServiceImpl implements ManagerService {
             }
         }
 
+        log.info("Completed find all users manager service method");
+
         return getUserPayloadList;
     }
 
     @Override
     public List<GetUserPayload> findAllUsersWhoSentDeletionRequest() {
+
+        log.info("Entered find all users who sent deletion request manager service method");
+
         List<User> userList = userRepository.findAll();
         List<GetUserPayload> usersWhoSentDeletionReqList = new ArrayList<>();
 
@@ -75,22 +85,29 @@ public class ManagerServiceImpl implements ManagerService {
             }
         }
 
+        log.info("Completed find all users who sent deletion request manager service method");
+
         return usersWhoSentDeletionReqList;
     }
 
     @Override
     @Transactional
     public void updateUserRole(Integer id, UserUpdateRolePayload userUpdateRolePayload) {
+
+        log.info("Entered update user role manager service method");
+
         UserRolesEnum newRole = getUserRolesEnumFromString(userUpdateRolePayload.role());
 
         userRepository.findById(id).ifPresentOrElse(
                 user -> {
                     user.setRole(newRole);
                     userRepository.save(user);
+                    log.info("Completed update user role manager service method");
                 },
                 () -> {
+                    log.info("User with this id does not exist");
                     throw new CustomException(this.messageSource.getMessage(
-                            "security.auth.errors.email.not.found", null, Locale.getDefault()
+                            "security.auth.errors.id.not.found", null, Locale.getDefault()
                     ), HttpStatus.NOT_FOUND);
                 }
         );
@@ -99,16 +116,21 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     @Transactional
     public void updateUserPrivilege(Integer id, UserUpdatePrivilegePayload userUpdatePrivilegePayload) {
+
+        log.info("Entered update user privilege manager service method");
+
         UserPrivilegesEnum newPrivilege = getUserPrivilegeEnumFromString(userUpdatePrivilegePayload.privilege());
 
         userRepository.findById(id).ifPresentOrElse(
                 user -> {
                     user.setPrivilege(newPrivilege);
                     userRepository.save(user);
+                    log.info("Completed update user privilege manager service method");
                 },
                 () -> {
+                    log.info("User with that id does not exist");
                     throw new CustomException(this.messageSource.getMessage(
-                            "security.auth.errors.email.not.found", null, Locale.getDefault()
+                            "security.auth.errors.id.not.found", null, Locale.getDefault()
                     ), HttpStatus.NOT_FOUND);
                 }
         );
@@ -117,6 +139,9 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     @Transactional
     public void deleteUser(Integer id, UserDetails userDetails) {
+
+        log.info("Entered delete user manager service method");
+
         User requestCaller = userRepository.findUserByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
                         "security.auth.errors.email.not.found", null, Locale.getDefault()
@@ -137,6 +162,8 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         userRepository.deleteById(id);
+
+        log.info("Completed delete user manager service method");
     }
 
     private UserRolesEnum getUserRolesEnumFromString(String role) {

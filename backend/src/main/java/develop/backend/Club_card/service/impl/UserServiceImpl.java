@@ -6,6 +6,7 @@ import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     @Value("${security.auth.super.admin.email}")
@@ -27,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getCurrentUser(UserDetails userDetails) {
+        log.info("Entered get current user data user service method");
         return userRepository.findUserByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
                         "security.auth.errors.email.not.found", null, Locale.getDefault()
@@ -36,6 +39,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void makeDeletionRequest(UserDetails userDetails) {
+
+        log.info("Entered make deletion user service method");
+
         if (userDetails.getUsername().equals(superAdminEmail)) {
             this.userRepository.deleteUserByEmail(superAdminEmail);
             return;
@@ -45,11 +51,16 @@ public class UserServiceImpl implements UserService {
         user.setIsPendingDeletion(true);
 
         userRepository.save(user);
+
+        log.info("Completed deletion request user service method");
     }
 
     @Override
     @Transactional
     public User updateCurrentUserData(UserDetails userDetails, UserUpdatePayload userUpdatePayload) {
+
+        log.info("Entered update user data user service method");
+
         User user = this.getCurrentUser(userDetails);
         String newEmail = userUpdatePayload.email();
         String oldEmail = user.getEmail();
@@ -65,6 +76,8 @@ public class UserServiceImpl implements UserService {
         user.setFirstName(userUpdatePayload.firstName());
         user.setLastName(userUpdatePayload.lastName());
         user.setMiddleName(userUpdatePayload.middleName());
+
+        log.info("Entered update user data user service method");
 
         return userRepository.save(user);
     }

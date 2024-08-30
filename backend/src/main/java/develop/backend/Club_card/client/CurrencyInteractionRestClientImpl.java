@@ -30,7 +30,7 @@ public class CurrencyInteractionRestClientImpl implements CurrencyInteractionRes
                         return clientResponse.bodyTo(GetUserFromCurrencyServicePayload.class).coins();
                     }
 
-                    return new BigDecimal(-1);
+                    return BigDecimal.valueOf(-1.0);
                 }));
     }
 
@@ -43,5 +43,9 @@ public class CurrencyInteractionRestClientImpl implements CurrencyInteractionRes
                 .retrieve()
                 .toEntity(TYPE_REF)
                 .getBody();
+    }
+
+    @Override
+    public void returnMoneyToCurrencyService(String email, BigDecimal amount) {
     }
 }

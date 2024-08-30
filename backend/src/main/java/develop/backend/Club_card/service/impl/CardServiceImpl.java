@@ -11,6 +11,7 @@ import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.CardService;
 import develop.backend.Club_card.service.QRCodeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,7 @@ import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CardServiceImpl implements CardService {
 
     private final CardRepository cardRepository;
@@ -33,7 +35,8 @@ public class CardServiceImpl implements CardService {
     private final MessageSource messageSource;
 
     public Card createCard(UserDetails userDetails,
-                           CreationCardPayload creationCardPayload){
+                           CreationCardPayload creationCardPayload) {
+
         User user = userRepository.findUserByEmail(userDetails.getUsername())
             .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
                 "security.auth.errors.username.not.found", null, Locale.getDefault()

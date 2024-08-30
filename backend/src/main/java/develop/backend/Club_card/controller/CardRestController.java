@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Locale;
 
-@Tag(name = "Контроллер для взаимодействия с картой")
+@Tag(name = "card_rest_controller")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/club-card/api/card")

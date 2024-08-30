@@ -7,5 +7,6 @@ import java.math.BigDecimal;
 
 public interface CurrencyInteractionRestClient {
     BigDecimal getUserBalanceFromCurrencyService(String email, WithDrawRequestPayload withDrawRequestPayload);
+    void returnMoneyToCurrencyService(String email, BigDecimal amount);
     GetUserFromCurrencyServicePayload getUserDataFromCurrencyService(String email);
 }

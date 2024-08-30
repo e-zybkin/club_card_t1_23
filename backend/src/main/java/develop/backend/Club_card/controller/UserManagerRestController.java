@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,10 +23,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "Контроллер менеджера/супер-админа")
+@Tag(name = "user_manager_rest_controller")
 @RestController
 @RequestMapping("/club-card/api/manager")
 @RequiredArgsConstructor
+@Slf4j
 public class UserManagerRestController {
 
     private final ManagerService managerService;
@@ -54,6 +56,8 @@ public class UserManagerRestController {
             BindingResult bindingResult
     ) throws BindException {
 
+        log.info("Entered update role manager controller method");
+
         if (bindingResult.hasErrors()) {
             if (bindingResult instanceof BindException exception) {
                 throw exception;
@@ -63,6 +67,9 @@ public class UserManagerRestController {
         }
 
         managerService.updateUserRole(id, userUpdateRolePayload);
+
+        log.info("Role update success");
+
         return ResponseEntity.ok().body(Map.of(
                 "role", userUpdateRolePayload.role()
         ));
@@ -93,6 +100,8 @@ public class UserManagerRestController {
             BindingResult bindingResult
     ) throws BindException {
 
+        log.info("Entered update privilege manager controller method");
+
         if (bindingResult.hasErrors()) {
             if (bindingResult instanceof BindException exception) {
                 throw exception;
@@ -102,6 +111,9 @@ public class UserManagerRestController {
         }
 
         managerService.updateUserPrivilege(id, userUpdatePrivilegePayload);
+
+        log.info("Update privilege success");
+
         return ResponseEntity.ok().body(Map.of(
                 "privilege", userUpdatePrivilegePayload.privilege()
         ));
@@ -124,6 +136,7 @@ public class UserManagerRestController {
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @GetMapping("get/users")
     public List<GetUserPayload> findAllUsers(@AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Entered get all users manager controller method");
         return this.managerService.findAllUsers(userDetails);
     }
 
@@ -143,6 +156,7 @@ public class UserManagerRestController {
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @GetMapping("get/deletion-requests")
     public List<GetUserPayload> findAllDeletionRequests() {
+        log.info("Entered get deletion requests from users manager controller method");
         return managerService.findAllUsersWhoSentDeletionRequest();
     }
 
@@ -169,7 +183,9 @@ public class UserManagerRestController {
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Integer id
     ) {
+        log.info("Entered delete user manager controller method");
         managerService.deleteUser(id, userDetails);
+        log.info("Delete user success");
         return ResponseEntity.ok().build();
     }
 }

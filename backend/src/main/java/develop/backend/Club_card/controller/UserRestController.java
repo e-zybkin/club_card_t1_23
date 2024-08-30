@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,10 +19,11 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Контроллер пользователя")
+@Tag(name = "user_rest_controller")
 @RestController
 @RequestMapping("/club-card/api/users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserRestController {
 
     private final UserService userService;
@@ -41,7 +43,12 @@ public class UserRestController {
     })
     @GetMapping
     public ResponseEntity<?> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+
+        log.info("Entered get user info user controller method");
+
         User user = userService.getCurrentUser(userDetails);
+
+        log.info("Completed get user info user controller method");
 
         return ResponseEntity.ok().body(new GetUserPayload(
                 user.getId(),
@@ -78,6 +85,8 @@ public class UserRestController {
             BindingResult bindingResult
     ) throws BindException {
 
+        log.info("Entered update current user data user controller method");
+
         if (bindingResult.hasErrors()) {
             if (bindingResult instanceof BindException exception) {
                 throw exception;
@@ -87,6 +96,9 @@ public class UserRestController {
         }
 
         User updatedUser = userService.updateCurrentUserData(userDetails, userUpdatePayload);
+
+        log.info("Completed update current user data user controller method");
+
         return ResponseEntity.ok().body(updatedUser);
     }
 
@@ -102,7 +114,9 @@ public class UserRestController {
     })
     @PostMapping
     public ResponseEntity<?> makeDeletionRequest(@AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Entered make deletion request for current user controller method");
         userService.makeDeletionRequest(userDetails);
+        log.info("Completed making deletion request for current user controller method");
         return ResponseEntity.ok().build();
     }
 
