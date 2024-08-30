@@ -7,7 +7,7 @@ import { Menu } from "primereact/menu";
 import { Menu as MenuType } from "primereact/menu";
 import { Button } from "primereact/button";
 
-import { UserRoles } from "../../utils/enums";
+import { UserPrivileges, UserRoles } from "../../utils/enums";
 
 import logo from "../../assets/images/logo.svg";
 import flag from "../../assets/images/flag.png";
@@ -99,14 +99,27 @@ function Header({ signOut, editUser }: props) {
           />
           <Button
             type="button"
-            label={`${currentUser?.firstName} ${currentUser?.lastName}`}
+            // label={`${currentUser?.firstName} ${currentUser?.lastName}`}
             icon={<img src={user} alt="юзер" className={styles["user-icon"]} />}
             onClick={(event) => userMenu.current?.toggle(event)}
             aria-controls="user_menu"
             aria-haspopup
             text
             className={styles.button}
-          />
+          >
+            <div className={styles.buttonBlock}>
+              <h2 className={styles.name}>
+                {currentUser?.firstName} {currentUser?.lastName}
+              </h2>{" "}
+              <h3 className={styles.privilege}>
+                {(currentUser?.privilege === UserPrivileges.high &&
+                  "Повышенный") ||
+                  (currentUser?.privilege === UserPrivileges.standart &&
+                    "Стандарт") ||
+                  (currentUser?.privilege === UserPrivileges.vip && "VIP")}
+              </h3>
+            </div>
+          </Button>
         </>
       )}
     </header>

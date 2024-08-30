@@ -18,8 +18,30 @@
 }
 
 .button {
+  position: relative;
   color: white;
   transition: all 0.2s ease-in-out;
+}
+
+.buttonBlock {
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+  align-items: center;
+}
+
+.name {
+  margin: 0;
+  font-size: medium;
+}
+
+.privilege {
+  position: absolute;
+  margin: 0;
+  font-size: 10px;
+  align-self: flex-end;
+  bottom: 12px;
+  right: 20px;
 }
 
 .button:hover {
