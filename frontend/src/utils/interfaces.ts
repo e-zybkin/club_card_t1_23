@@ -52,5 +52,5 @@ export interface UserUpdate {
   lastName: string;
   middleName: string;
   email: string;
-  birthday: Date;
+  dateOfBirth: Date;
 }

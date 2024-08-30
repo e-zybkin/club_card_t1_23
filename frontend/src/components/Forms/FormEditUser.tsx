@@ -43,7 +43,7 @@ export function FormEditUser({ onUpdateUser }: props) {
       firstName: data.firstName || "",
       lastName: data.lastName || "",
       middleName: data.middleName || "",
-      birthday: data.birthday || "",
+      dateOfBirth: data.dateOfBirth || "",
     };
     onUpdateUser(preparedData);
     reset();
@@ -204,7 +204,7 @@ export function FormEditUser({ onUpdateUser }: props) {
       <div className={styles.field}>
         <span className="p-float-label">
           <Controller
-            name="birthday"
+            name="dateOfBirth"
             control={control}
             rules={{
               validate: {},
@@ -213,12 +213,12 @@ export function FormEditUser({ onUpdateUser }: props) {
           />
           <label
             htmlFor="birthday"
-            className={cn({ "p-error": errors.birthday })}
+            className={cn({ "p-error": errors.dateOfBirth })}
           >
             Дата рождения*
           </label>
         </span>
-        {getFormErrorMessage("birthday")}
+        {getFormErrorMessage("dateOfBirth")}
       </div>
 
       <Button

@@ -62,7 +62,7 @@ export const updUserData = (data: UserUpdate) => {
       lastName: data.lastName,
       middleName: data.middleName,
       email: data.email,
-      dateOfBirth: data.birthday,
+      dateOfBirth: data.dateOfBirth,
     }),
   }).then(getJson);
 };
