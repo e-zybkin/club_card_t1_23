@@ -35,24 +35,26 @@ export function FormEditUser({ onUpdateUser }: props) {
     formState: { errors, isValid, isDirty },
     handleSubmit,
     reset,
-  } = useForm({ defaultValues, mode: "onChange" });
+  } = useForm<UserUpdate>({ defaultValues, mode: "onChange" });
 
   const onSubmit = (data: UserUpdate) => {
-    const preparedData = {
-      email: data.email,
-      firstName: data.firstName,
-      lastName: data.lastName,
-      middleName: data.middleName,
-      birthday: data.birthday,
+    const preparedData: UserUpdate = {
+      email: data.email || "",
+      firstName: data.firstName || "",
+      lastName: data.lastName || "",
+      middleName: data.middleName || "",
+      birthday: data.birthday || "",
     };
     onUpdateUser(preparedData);
     reset();
   };
 
-  const getFormErrorMessage = (fieldName) =>
-    errors[fieldName] && (
-      <small className="p-error">{errors[fieldName].message}</small>
-    );
+  const getFormErrorMessage = (
+    fieldName: keyof typeof errors
+  ): JSX.Element | null =>
+    errors[fieldName] ? (
+      <small className="p-error">{errors[fieldName]?.message}</small>
+    ) : null;
 
   return (
     <form
@@ -77,7 +79,6 @@ export function FormEditUser({ onUpdateUser }: props) {
             }}
             render={({ field, fieldState }) => (
               <InputText
-                value={firstName || ""}
                 id={field.name}
                 {...field}
                 autoFocus
@@ -115,7 +116,6 @@ export function FormEditUser({ onUpdateUser }: props) {
             }}
             render={({ field, fieldState }) => (
               <InputText
-                value={lastName || ""}
                 id={field.name}
                 {...field}
                 autoFocus
@@ -153,7 +153,6 @@ export function FormEditUser({ onUpdateUser }: props) {
             }}
             render={({ field, fieldState }) => (
               <InputText
-                value={middleName || ""}
                 id={field.name}
                 {...field}
                 autoFocus
@@ -187,7 +186,6 @@ export function FormEditUser({ onUpdateUser }: props) {
             }}
             render={({ field, fieldState }) => (
               <InputText
-                value={email || ""}
                 id={field.name}
                 {...field}
                 className={cn({
@@ -211,9 +209,7 @@ export function FormEditUser({ onUpdateUser }: props) {
             rules={{
               validate: {},
             }}
-            render={({ field }) => (
-              <Calendar id={field.name} value={birthday} {...field} />
-            )}
+            render={({ field }) => <Calendar id={field.name} {...field} />}
           />
           <label
             htmlFor="birthday"

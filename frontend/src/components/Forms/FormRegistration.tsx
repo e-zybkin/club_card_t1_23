@@ -44,8 +44,12 @@ export function FormRegistration({ handleRegister }: props) {
     reset();
   };
 
-  const getFormErrorMessage = (name: string) =>
-    errors[name] && <small className="p-error">{errors[name].message}</small>;
+  const getFormErrorMessage = (
+    fieldName: keyof typeof errors
+  ): JSX.Element | null =>
+    errors[fieldName] ? (
+      <small className="p-error">{errors[fieldName]?.message}</small>
+    ) : null;
 
   const passwordHeader = <h4>Введите пароль</h4>;
   const passwordFooter = (
@@ -95,7 +99,7 @@ export function FormRegistration({ handleRegister }: props) {
           />
           <label
             htmlFor="initials"
-            className={cn({ "p-error": !!errors.name })}
+            className={cn({ "p-error": !!errors.initials })}
           >
             ФИО*
           </label>
@@ -136,17 +140,17 @@ export function FormRegistration({ handleRegister }: props) {
           <Controller
             name="password"
             control={control}
-            rules={{
-              required: "Обязательное поле Пароль.",
-              maxLength: {
-                value: 40,
-                message: "Максимальная длина 40 символа.",
-              },
-              pattern: {
-                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,42})/,
-                message: "Не корректный пароль",
-              },
-            }}
+            // rules={{
+            //   required: "Обязательное поле Пароль.",
+            //   maxLength: {
+            //     value: 40,
+            //     message: "Максимальная длина 40 символа.",
+            //   },
+            //   // pattern: {
+            //   //   value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,42})/,
+            //   //   message: "Не корректный пароль",
+            //   // },
+            // }}
             render={({ field, fieldState }) => (
               <Password
                 id={field.name}

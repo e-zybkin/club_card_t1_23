@@ -5,7 +5,7 @@ export enum UserRoles {
   member = "ROLE_MEMBER"
 }
 
-export enum UserPriveleges {
+export enum UserPrivileges {
   unknown="PRIVILEGE_UNKNOWN",
   standart="PRIVILEGE_STANDARD",
   high="PRIVILEGE_HIGH",

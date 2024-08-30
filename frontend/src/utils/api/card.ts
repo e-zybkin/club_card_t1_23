@@ -10,14 +10,20 @@ const getToken = () => {
   return `Bearer ${localStorage.getItem("jwt")}`;
 };
 
-const getJson = (response) => {
+interface ErrorResponse {
+  errors: string[];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getJson = async (response: Response): Promise<any> => {
   if (response.ok) {
     return response.json();
   }
-  return response.json().then((err) => {
-    throw new Error(err.message);
-  });
+
+  const err: ErrorResponse = await response.json();
+  throw new Error(err.errors[0]);
 };
+
 
 export const createCard = (colorName: keyof typeof CardColors, templateName: keyof typeof CardTemplates ) => {
   return fetch(`${BASE_URL}/create`, {
