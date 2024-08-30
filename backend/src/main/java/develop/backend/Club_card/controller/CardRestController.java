@@ -12,6 +12,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +38,7 @@ import java.util.Locale;
 @RequestMapping("/club-card/api/card")
 public class CardRestController {
 
+    private static final Logger log = LoggerFactory.getLogger(CardRestController.class);
     private final CardServiceImpl cardService;
     private final UserServiceImpl userService;
     private final CardRepository cardRepository;

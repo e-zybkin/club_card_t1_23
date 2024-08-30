@@ -77,8 +77,7 @@ public class CardServiceImpl implements CardService {
         user.setCard(card);
         userRepository.save(user);
 
-    return card;
-
+        return card;
     }
 
     public void addScore(Card card, int inc) {

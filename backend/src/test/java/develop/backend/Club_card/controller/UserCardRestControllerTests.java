@@ -28,7 +28,20 @@ public class UserCardRestControllerTests {
 
     @Test
     @Order(1)
-    public void signUpThenLoginThenCreateCardForUserReturnsOk() throws Exception {
+    public void signUpSuperAdminAndSignUpThenLoginThenCreateCardForUserReturnsOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                    {
+                         "firstName": "Сергей",
+                         "lastName": "Сергеев",
+                         "middleName": "Сергеевич",
+                         "email": "superadmin@yandex.ru",
+                         "password": "superadminpassword"
+                    }
+                """))
+                .andExpect(status().isCreated());
+
         mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
@@ -78,21 +91,21 @@ public class UserCardRestControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                     {
-                         "firstName": "Исаев",
-                         "lastName": "Иванов",
-                         "middleName": "Иванович",
+                         "firstName": "Лаврентий",
+                         "lastName": "Исаев",
+                         "middleName": "Игоревич",
                          "email": "isaev@gmail.com",
                          "password": "123456"
                     }
                 """))
             .andExpect(status().isCreated())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"));
+            .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("isaev@gmail.com"));
 
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                     {
-                        "email": "ivanov@gmail.com",
+                        "email": "isaev@gmail.com",
                         "password": "123456"
                     }
                 """))
@@ -114,6 +127,54 @@ public class UserCardRestControllerTests {
                     }
                 """))
             .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Order(3)
+    public void loginUserThenBlockHisCardReturnsOk() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                    {
+                        "email": "ivanov@gmail.com",
+                        "password": "123456"
+                    }
+                """))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseBody = result.getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        String bearerToken = jsonNode.get("token").asText();
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/club-card/api/card/block")
+                .header("Authorization", "Bearer " + bearerToken))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @Order(4)
+    public void loginUserThenBlockHisAlreadyBlockedCardReturnsUnprocessableEntity() throws Exception {
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                    {
+                        "email": "ivanov@gmail.com",
+                        "password": "123456"
+                    }
+                """))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseBody = result.getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        String bearerToken = jsonNode.get("token").asText();
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/club-card/api/card/block")
+                .header("Authorization", "Bearer " + bearerToken))
+                .andExpect(status().isUnprocessableEntity());
     }
 
 }

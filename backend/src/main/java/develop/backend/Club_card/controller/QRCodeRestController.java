@@ -7,7 +7,6 @@ import develop.backend.Club_card.service.QRCodeService;
 import develop.backend.Club_card.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -89,6 +88,6 @@ public class QRCodeRestController {
 
         log.info("Completed generate qr code from user data qr code controller method");
 
-       return QRCodeService.encodeQR(user);
+        return QRCodeService.encodeQR(user);
     }
 }
