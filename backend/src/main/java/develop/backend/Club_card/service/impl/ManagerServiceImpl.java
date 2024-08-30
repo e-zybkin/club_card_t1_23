@@ -30,7 +30,7 @@ public class ManagerServiceImpl implements ManagerService {
     private final MessageSource messageSource;
 
     @Override
-    public List<GetUserPayload> findAllUsers(UserDetails userDetails) {
+    public List<User> findAllUsers(UserDetails userDetails) {
 
         log.info("Entered find all users manager service method");
 
@@ -40,26 +40,17 @@ public class ManagerServiceImpl implements ManagerService {
         ), HttpStatus.NOT_FOUND));
 
         List<User> userList = userRepository.findAll();
-        List<GetUserPayload> getUserPayloadList = new ArrayList<>();
+        List<User> getUserList = new ArrayList<>();
 
         for (User user : userList) {
             if (!user.getId().equals(requestSender.getId()) && roleFilter(requestSender.getRole(), user.getRole())) {
-                getUserPayloadList.add(new GetUserPayload(
-                        user.getId(),
-                        user.getEmail(),
-                        user.getFirstName(),
-                        user.getLastName(),
-                        user.getMiddleName(),
-                        user.getRole().getRoleInString(),
-                        user.getPrivilege().getPrivilegeInString(),
-                        user.getDateOfBirth()
-                ));
+                getUserList.add(user);
             }
         }
 
         log.info("Completed find all users manager service method");
 
-        return getUserPayloadList;
+        return getUserList;
     }
 
     @Override
