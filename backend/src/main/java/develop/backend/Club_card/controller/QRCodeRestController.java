@@ -62,8 +62,7 @@ public class QRCodeRestController {
     )
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @PostMapping("generate/{id:\\d+}")
-    public ResponseEntity<Map<String, String>> generateQRCodeForAdmin(@AuthenticationPrincipal UserDetails userDetails,
-                                                                      @PathVariable("id") Integer id,
+    public ResponseEntity<Map<String, String>> generateQRCodeForAdmin(@PathVariable("id") Integer id,
                                                                       BindingResult bindingResult) throws BindException {
 
         log.info("Entered generate qr code from user data qr code controller method");

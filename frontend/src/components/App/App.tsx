@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Route, Routes, useNavigate, Navigate } from "react-router-dom";
 
 import Header from "../Header/Header";
@@ -10,8 +10,9 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import PopupEditUser from "../Popups/PopupEditUser";
 import PopupCreateCard from "../Popups/PopupCreateCard";
 import Loader from "../Loader/Loader";
-// import { UsersList } from "../UsersList/UsersList";
+import { UsersList } from "../UsersList/UsersList";
 import { PopupDialog } from "../Popups/PopupDialog";
+import { PopupDeleteUser } from "../Popups/PopupDeleteUser";
 
 import {
   UserLogin,
@@ -24,18 +25,29 @@ import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 import * as userApi from "../../utils/api/auth";
 import * as cardApi from "../../utils/api/card";
+import * as managerApi from "../../utils/api/users";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeflex/primeflex.css";
 import styles from "./App.module.css";
-import { CardColors, CardTemplates } from "../../utils/enums";
+import {
+  CardColors,
+  CardTemplates,
+  UserPrivileges,
+  UserRoles,
+} from "../../utils/enums";
 import { PopupQR } from "../Popups/PopupQR";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<
     User | Record<PropertyKey, never>
   >({});
+
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
   const [cardData, setCardData] = useState<CardData | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
@@ -45,6 +57,8 @@ function App() {
   const [isPopupCreateCardOpen, setIsPopupCreateCardOpen] =
     useState<boolean>(false);
   const [isPopupQrOpen, setIsQrPopupOpen] = useState<boolean>(false);
+  const [isPopupDeleteUserOpen, setIsPopupDeleteUserOpen] =
+    useState<boolean>(false);
 
   const [showMessage, setShowMessage] = useState(false);
   const [isDialogError, setIsDialogError] = useState(false);
@@ -120,7 +134,7 @@ function App() {
       navigate("/");
       showDialog("Вы успешно вошли!", false);
     } catch (err) {
-      showDialog(err?.message, true);
+      showDialog((err as Error).message, true);
     } finally {
       setIsLoading(false);
     }
@@ -133,7 +147,7 @@ function App() {
       handleLogin({ email: data.email, password: data.password });
       navigate("/sign-in");
     } catch (err) {
-      showDialog(err?.message, true);
+      showDialog((err as Error).message, true);
     } finally {
       setIsLoading(false);
     }
@@ -177,6 +191,85 @@ function App() {
       });
   };
 
+  const handleGetAllUsers = useCallback(() => {
+    setIsLoading(true);
+    managerApi
+      .getAllUsers()
+      .then((res) => {
+        setAllUsers(res);
+      })
+      .catch((err) => {
+        showDialog(err.message, true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, []);
+
+  const handleDeleteUser = (userId: number) => {
+    setIsLoading(true);
+    managerApi
+      .deleteUser(userId)
+      .then(() => {
+        setAllUsers(allUsers.filter((user) => user.id !== userId));
+        closeAllPopups();
+        showDialog("Вы удалили пользователя", false);
+      })
+      .catch((err) => {
+        showDialog(err.message, true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const handleChangeRole = (id: number, newRole: UserRoles) => {
+    setIsLoading(true);
+    managerApi
+      .changeRole({ id, role: newRole })
+      .then((updatedUser) => {
+        setAllUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === updatedUser.id ? updatedUser : user
+          )
+        );
+        closeAllPopups();
+        showDialog("Вы успешно изменили роль", false);
+      })
+      .catch((err) => {
+        showDialog(err.message, true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const handleChangePrivelege = (id: number, newPrivilege: UserPrivileges) => {
+    setIsLoading(true);
+    managerApi
+      .changePrivilege({ id, privilege: newPrivilege })
+      .then((updatedUser) => {
+        setAllUsers((prevUsers) =>
+          prevUsers.map((user) =>
+            user.id === updatedUser.id ? updatedUser : user
+          )
+        );
+        closeAllPopups();
+        showDialog("Вы успешно изменили привилегию", false);
+      })
+      .catch((err) => {
+        showDialog(err.message, true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const openDeleteUserPopup = (user: User) => {
+    setSelectedUser(user);
+    setIsPopupDeleteUserOpen(true);
+  };
+
   const signOut = (): void => {
     localStorage.removeItem("jwt");
     setLoggedIn(false);
@@ -190,6 +283,7 @@ function App() {
     setIsPopupCreateCardOpen(false);
     setShowMessage(false);
     setIsQrPopupOpen(false);
+    setIsPopupDeleteUserOpen(false);
   };
 
   return (
@@ -214,7 +308,7 @@ function App() {
               }
             />
 
-            {/* <Route
+            <Route
               path="/users"
               element={
                 <ProtectedRoute
@@ -223,12 +317,13 @@ function App() {
                       getAllUsers={handleGetAllUsers}
                       users={allUsers}
                       onChangeRole={handleChangeRole}
+                      onChangePrivilege={handleChangePrivelege}
                       onDeleteUser={openDeleteUserPopup}
                     />
                   }
                 />
               }
-            /> */}
+            />
 
             <Route
               path="/signup"
@@ -273,6 +368,13 @@ function App() {
             visible={isPopupQrOpen}
             onClose={closeAllPopups}
             card={cardData}
+          />
+
+          <PopupDeleteUser
+            user={selectedUser}
+            visible={isPopupDeleteUserOpen}
+            onClose={closeAllPopups}
+            onDeleteUser={handleDeleteUser}
           />
         </div>
         <Loader isLoading={isLoading} />

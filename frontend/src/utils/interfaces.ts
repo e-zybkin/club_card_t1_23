@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { UserRoles, UserPriveleges } from "./enums"
+import { UserRoles, UserPrivileges } from "./enums"
 import { CardColors, CardTemplates } from "./enums";
 
 export interface UserLogin {
@@ -24,7 +24,7 @@ export interface User {
   middleName: string,
   dateOfBirth: Date,
   role: UserRoles,
-  privilege: UserPriveleges,
+  privilege: UserPrivileges,
 }
 
 export interface CardData {

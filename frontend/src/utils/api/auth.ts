@@ -10,13 +10,18 @@ const getToken = () => {
   return `Bearer ${localStorage.getItem("jwt")}`;
 };
 
-const getJson = (response) => {
+interface ErrorResponse {
+  errors: string[];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getJson = async (response: Response): Promise<any> => {
   if (response.ok) {
     return response.json();
   }
-  return response.json().then((err) => {
-    throw new Error(err.errors[0]);
-  });
+
+  const err: ErrorResponse = await response.json();
+  throw new Error(err.errors[0]);
 };
 
 export const register = ({ password, email, firstName, lastName, middleName }: UserRegister) => {

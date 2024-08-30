@@ -25,13 +25,17 @@ export function FormLogin({ handleLogin }: props) {
     reset,
   } = useForm({ defaultValues, mode: "onBlur" });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: UserLogin) => {
     handleLogin(data);
     reset();
   };
 
-  const getFormErrorMessage = (name: string) =>
-    errors[name] && <small className="p-error">{errors[name].message}</small>;
+  const getFormErrorMessage = (
+    fieldName: keyof typeof errors
+  ): JSX.Element | null =>
+    errors[fieldName] ? (
+      <small className="p-error">{errors[fieldName]?.message}</small>
+    ) : null;
 
   return (
     <form
