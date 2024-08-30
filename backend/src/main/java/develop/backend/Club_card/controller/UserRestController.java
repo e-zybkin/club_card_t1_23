@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/club-card/api/users")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "http://10.4.56.74")
 public class UserRestController {
 
     private final UserService userService;

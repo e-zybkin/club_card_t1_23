@@ -29,6 +29,7 @@ import java.util.Map;
 @RequestMapping("/club-card/api/manager")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "http://10.4.56.74")
 public class UserManagerRestController {
 
     private final ManagerService managerService;

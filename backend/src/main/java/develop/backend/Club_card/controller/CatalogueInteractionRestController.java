@@ -19,9 +19,10 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 
 @RestController
-@RequestMapping("/club-card/api/catalogue")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "http://10.4.56.74")
+@RequestMapping("/club-card/api/catalogue")
 public class CatalogueInteractionRestController {
 
     private final CurrencyInteractionRestClient currencyInteractionRestClient;
