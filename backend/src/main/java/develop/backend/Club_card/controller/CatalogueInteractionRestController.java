@@ -21,7 +21,7 @@ public class CatalogueInteractionRestController {
 
     private final CurrencyInteractionRestClient currencyInteractionRestClient;
 
-    @PatchMapping("/buy}")
+    @PatchMapping("/buy")
     public ResponseEntity<?> buyProduct(
             @Valid @RequestBody MoneyAmountPayload moneyAmountPayload,
             @AuthenticationPrincipal UserDetails userDetails,
