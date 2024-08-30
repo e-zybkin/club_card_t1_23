@@ -4,6 +4,8 @@ import develop.backend.Club_card.client.CurrencyInteractionRestClient;
 import develop.backend.Club_card.controller.payload.catalogue.MoneyAmountPayload;
 import develop.backend.Club_card.controller.payload.currency.DepositRequestPayload;
 import develop.backend.Club_card.controller.payload.currency.WithDrawRequestPayload;
+import develop.backend.Club_card.entity.User;
+import develop.backend.Club_card.service.CurrencyInteractionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +25,9 @@ import java.math.BigDecimal;
 public class CatalogueInteractionRestController {
 
     private final CurrencyInteractionRestClient currencyInteractionRestClient;
+    private final CurrencyInteractionService currencyInteractionService;
 
-    @PatchMapping("/buy")
+    @PostMapping("/buy")
     public ResponseEntity<?> buyProduct(
             @Valid @RequestBody MoneyAmountPayload moneyAmountPayload,
             @AuthenticationPrincipal UserDetails userDetails,
@@ -60,9 +63,9 @@ public class CatalogueInteractionRestController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/return")
+    @PostMapping("/return/{id:\\d+}")
     public ResponseEntity<?> returnProduct(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Integer userId,
             @Valid @RequestBody MoneyAmountPayload moneyAmountPayload,
             BindingResult bindingResult
     ) throws BindException {
@@ -77,8 +80,10 @@ public class CatalogueInteractionRestController {
             throw new BindException(bindingResult);
         }
 
+        User controlledUser = currencyInteractionService.getUserById(userId);
+
         currencyInteractionRestClient.returnMoneyToCurrencyService(
-                userDetails.getUsername(),
+                controlledUser.getEmail(),
                 new DepositRequestPayload(
                         moneyAmountPayload.amount(),
                         "Запрос на возврат денег валютному сервису",
