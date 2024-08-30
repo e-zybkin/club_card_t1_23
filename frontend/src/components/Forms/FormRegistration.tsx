@@ -35,8 +35,8 @@ export function FormRegistration({ handleRegister }: props) {
   }) => {
     const FIO = data.initials.split(" ");
     handleRegister({
-      firstName: FIO[0],
-      lastName: FIO[1],
+      firstName: FIO[1],
+      lastName: FIO[0],
       middleName: FIO[2],
       email: data.email,
       password: data.password,

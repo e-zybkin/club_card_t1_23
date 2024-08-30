@@ -10,6 +10,8 @@ import { Button } from "primereact/button";
 import { UserRoles } from "../../utils/enums";
 
 import logo from "../../assets/images/logo.svg";
+import flag from "../../assets/images/flag.png";
+import user from "../../assets/images/user.png";
 
 import "primeicons/primeicons.css";
 import styles from "./Header.module.css";
@@ -76,10 +78,14 @@ function Header({ signOut, editUser }: props) {
 
   return (
     <header className={styles.header}>
-      <img src={logo} alt="логотип" className={styles.logo} />
+      <div className={styles["logo-block"]}>
+        <img src={logo} alt="логотип" className={styles.logo} />
+        <img src={flag} alt="флажок" className={styles.logo} />
+        <h2 className={styles.title}>Клубная карта</h2>
+      </div>
 
       {loggedIn && (
-        <div>
+        <>
           <Menu
             model={
               currentUser?.role === UserRoles.member ||
@@ -94,14 +100,14 @@ function Header({ signOut, editUser }: props) {
           <Button
             type="button"
             label={`${currentUser?.firstName} ${currentUser?.lastName}`}
-            icon="pi pi-user"
+            icon={<img src={user} alt="юзер" className={styles["user-icon"]} />}
             onClick={(event) => userMenu.current?.toggle(event)}
             aria-controls="user_menu"
             aria-haspopup
             text
             className={styles.button}
           />
-        </div>
+        </>
       )}
     </header>
   );

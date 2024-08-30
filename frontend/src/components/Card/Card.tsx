@@ -2,7 +2,7 @@ import logo from "../../assets/cards/card-logo.png";
 import name from "../../assets/cards/card-name.png";
 import art from "../../assets/cards/card-art.png";
 
-import { useContext } from "react";
+import { useContext, Dispatch, SetStateAction } from "react";
 
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
@@ -12,9 +12,10 @@ import { CardTemplates, CardColors } from "../../utils/enums";
 
 interface props {
   card: CardData | null;
+  openQr: Dispatch<SetStateAction<boolean>>;
 }
 
-function Card({ card }: props) {
+function Card({ card, openQr }: props) {
   const userContext = useContext(CurrentUserContext);
 
   const currentUser = userContext?.currentUser;
@@ -62,8 +63,8 @@ function Card({ card }: props) {
         }}
       >
         <div className={styles.stripe}></div>
-        {/* <div></div> */}
         <img
+          onClick={() => openQr(true)}
           className={styles.code}
           src={`data:image/png;base64,${card?.qrCode}`}
           alt="Base64 Image"

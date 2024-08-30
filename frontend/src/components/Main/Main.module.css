@@ -6,90 +6,22 @@
   padding-top: 50px;
 }
 
-.card {
+.create {
   display: flex;
-  width: 348px;
-  height: 219px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size:cover;
-  position: relative;
-  border-radius: 20px;
-  background-color: #00aae6;
-  color: white;
-  margin-bottom: 10px; /* убрать */
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
 }
 
-.stripe {
-  position: absolute;
-  width: 100%;
-  top: 30px;
-  right: 0;
-  left: 0;
-  height: 40px;
-  background-color: black;
+.picture {
+  width: 200px;
 }
 
-.art {
-  position: absolute;
-  width: 135px;
-  right: 39px;
-  bottom: 41px;
-}
-
-.logo {
-  position: absolute;
-  width: 91px;
-}
-
-.code {
-  position: absolute;
-  left: 39px;
-  bottom: 31px;
-  width: 100px;
-  height: 100px;
-  background-color: white;
-}
-
-.number {
-  margin: 0;
-  width: 100%;
-  font-size: 25px;
+.title {
   text-align: center;
-  position: absolute;
-  top: 50%;
-  right: 50%;
-  transform: translateX(50%) translateY(-50%);
-}
-
-.date {
-  position: absolute;
-  margin: 0;
-  left: 26px;
-  bottom: 20px;
-}
-
-.name {
-  position: absolute;
-  width: 94px;
-  left: 26px;
-  top: 20px;
-}
-
-.initials {
-  position: absolute;
-  right: 26px;
-  bottom: 20px;
   margin: 0;
 }
 
-.logo-first-case {
-  top: 50%;
-  right: 50%;
-  transform: translateX(50%) translateY(-50%);
-}
-
-.logo-second-case {
-  top: 17px;
-  right: 24px;
+.submit {
+  background-color: #88f657;
 }
