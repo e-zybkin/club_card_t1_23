@@ -41,12 +41,12 @@ public class CatalogueRestController {
         BigDecimal restAmount;
 
         try{
-            restAmount = currencyInteractionRestClient.getUserBalanceFromCurrencyService(getMoneyPayload.email(), getMoneyPayload.count());
+//            restAmount = currencyInteractionRestClient.getUserBalanceFromCurrencyService(getMoneyPayload.email(), getMoneyPayload.count());
         } catch (CustomException ex) {
             throw new CustomException(ex.getMessage(), ex.getHttpStatus());
         }
 
-        return new ResponseEntity<>(restAmount, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
@@ -66,12 +66,12 @@ public class CatalogueRestController {
         BigDecimal restAmount;
 
         try{
-            restAmount = currencyInteractionRestClient.getUserBalanceFromCurrencyService(String.valueOf(getMoneyPayload));
+//            restAmount = currencyInteractionRestClient.getUserBalanceFromCurrencyService(String.valueOf(getMoneyPayload));
         } catch (CustomException ex) {
             throw new CustomException(ex.getMessage(), ex.getHttpStatus());
         }
 
-        return new ResponseEntity<>(restAmount, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

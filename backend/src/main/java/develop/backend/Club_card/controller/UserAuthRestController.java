@@ -4,7 +4,9 @@ import develop.backend.Club_card.controller.payload.user.UserLogInPayload;
 import develop.backend.Club_card.controller.payload.user.UserSignUpPayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.service.UserAuthService;
+import develop.backend.Club_card.service.UserService;
 import develop.backend.Club_card.service.impl.EmailServiceImpl;
+import develop.backend.Club_card.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,11 +15,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.AbstractMap;
@@ -31,6 +37,7 @@ public class UserAuthRestController {
 
     private final UserAuthService userAuthService;
     private final EmailServiceImpl emailService;
+    private final UserServiceImpl userService;
 
     @Operation(
             summary = "Аутентификация пользователя",
@@ -96,11 +103,26 @@ public class UserAuthRestController {
 
         User user = userAuthService.signup(userSignUpPayload);
 
-//        emailService.sendVerificationEmail(user, "checkForToken");
+        String token = emailService.createToken(user);
+        emailService.sendVerificationEmail(user, token);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "email", user.getEmail()
         ));
+    }
+
+    @GetMapping("/confirm")
+    public ResponseEntity<String> confirmUser(@AuthenticationPrincipal UserDetails userDetails,
+                                              @RequestParam("token") String token) {
+
+        User user = userService.getCurrentUser(userDetails);
+
+        boolean isVerified = emailService.confirmUser(user, token);
+        if (isVerified) {
+            return ResponseEntity.ok("Электронная почта подтверждена.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неверный или просроченный токен.");
+        }
     }
 
 }
