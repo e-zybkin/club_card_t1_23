@@ -65,38 +65,48 @@ public class UserManagerRestControllerTests {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    @Order(2)
-//    public void signUpNewUserThenMakeHimManagerAndHighPrivilege() throws Exception {
-//        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("""
-//                    {
-//                        "firstName": "Сергей",
-//                        "lastName": "Сергеев",
-//                        "middleName": "Сергеевич",
-//                        "email": "example@yandex.ru",
-//                        "password": "1234567"
-//                    }
-//                """))
-//                .andExpect(status().isCreated())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("superadmin@yandex.ru"));
-//
-//        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
-//                        .contentType(MediaType.APPLICATION_JSON)
-//                        .content("""
-//                    {
-//                        "email": "superadmin@yandex.ru",
-//                        "password": "superadminpassword"
-//                    }
-//                 """))
-//                .andExpect(status().isOk())
-//                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("superadmin@yandex.ru"))
-//                .andReturn();
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String responseBody = result.getResponse().getContentAsString();
-//        JsonNode jsonNode = objectMapper.readTree(responseBody);
-//        String bearerToken = jsonNode.get("token").asText();
-//    }
+    @Test
+    @Order(2)
+    public void signUpNewUserThenMakeHimManagerAndHighPrivilege() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                    {
+                        "firstName": "Сергей",
+                        "lastName": "Сергеев",
+                        "middleName": "Сергеевич",
+                        "email": "example@yandex.ru",
+                        "password": "1234567"
+                    }
+                """))
+                .andExpect(status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("example@yandex.ru"));
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/club-card/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                    {
+                        "email": "superadmin@yandex.ru",
+                        "password": "superadminpassword"
+                    }
+                 """))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("superadmin@yandex.ru"))
+                .andReturn();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String responseBody = result.getResponse().getContentAsString();
+        JsonNode jsonNode = objectMapper.readTree(responseBody);
+        String bearerToken = jsonNode.get("token").asText();
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/club-card/api/manager/update/role/2")
+                .header("Authorization", "Bearer " + bearerToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                     {
+                        "role": "ROLE_MANAGER"
+                     }
+                 """))
+                .andExpect(status().isOk());
+    }
 }

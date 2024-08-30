@@ -2,10 +2,9 @@ package develop.backend.Club_card.client;
 
 import develop.backend.Club_card.controller.payload.currency.GetUserFromCurrencyServicePayload;
 import develop.backend.Club_card.controller.payload.currency.WithDrawRequestPayload;
-import develop.backend.Club_card.exception.CustomException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
@@ -13,26 +12,36 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class CurrencyInteractionRestClientImpl implements CurrencyInteractionRestClient {
 
+    ParameterizedTypeReference<GetUserFromCurrencyServicePayload> TYPE_REF =
+            new ParameterizedTypeReference<>() {};
+
     private final RestClient restClient;
 
     @Override
     public BigDecimal getUserBalanceFromCurrencyService(String email, WithDrawRequestPayload withDrawRequestPayload) {
-        ResponseEntity<GetUserFromCurrencyServicePayload> responseEntity = restClient
+        return restClient
                 .post()
-                .uri("http://localhost:8081/api/user/{email}/withdraw", email)
-                .header("")
+                .uri("http://10.4.56.90:3000/api/user/{email}/withdraw", email)
+                .header("ServiceIntegration", "mega-secret-integration-token")
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(withDrawRequestPayload)
+                .exchange(((clientRequest, clientResponse) -> {
+                    if (clientResponse.getStatusCode().is2xxSuccessful()) {
+                        return clientResponse.bodyTo(GetUserFromCurrencyServicePayload.class).coins();
+                    }
+
+                    return new BigDecimal(-1);
+                }));
+    }
+
+    @Override
+    public GetUserFromCurrencyServicePayload getUserDataFromCurrencyService(String email) {
+        return restClient
+                .get()
+                .uri("http://10.4.56.90:3000/api/user/{email}", email)
+                .header("ServiceIntegration", "mega-secret-integration-token")
                 .retrieve()
-                .toEntity(GetUserFromCurrencyServicePayload.class);
-
-        int statusCode = responseEntity.getStatusCode().value();
-
-        if (statusCode == 400) {
-            throw new CustomException("Недостаточно средств в денежном хранилище", HttpStatus.BAD_REQUEST);
-        }
-
-        GetUserFromCurrencyServicePayload responseBody = responseEntity.getBody();
-
-        return responseBody.coins();
+                .toEntity(TYPE_REF)
+                .getBody();
     }
 }

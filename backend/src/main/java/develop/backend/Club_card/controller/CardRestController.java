@@ -2,11 +2,10 @@ package develop.backend.Club_card.controller;
 
 import develop.backend.Club_card.controller.payload.card.CreationCardPayload;
 import develop.backend.Club_card.entity.Card;
-import develop.backend.Club_card.repository.CardRepository;
-import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.impl.CardServiceImpl;
 import develop.backend.Club_card.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Контроллер для взаимодействия с картой")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/club-card/api/card")

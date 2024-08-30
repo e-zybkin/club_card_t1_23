@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
 @Configuration
-public class ClientBeans {
+public class ClientConfig {
 
     @Bean
     public CurrencyInteractionRestClientImpl currencyInteractionRestClient() {

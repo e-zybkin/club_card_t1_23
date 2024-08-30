@@ -1,14 +1,12 @@
 package develop.backend.Club_card.controller;
 
-import com.google.zxing.WriterException;
-import develop.backend.Club_card.controller.payload.user.UserIdPayload;
-import develop.backend.Club_card.controller.payload.user.UserNamePayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.QRCodeService;
 import develop.backend.Club_card.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -19,18 +17,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.util.Base64;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+@Tag(name = "Контроллер для взаимодействия с qr-кодом")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/club-card/api/qr")
@@ -63,9 +56,9 @@ public class QRCodeRestController {
                 "Доступно только для админа и суперадмина."
     )
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
-    @PostMapping("generate")
+    @PostMapping("generate/{id:\\d+}")
     public ResponseEntity<Map<String, String>> generateQRCodeForAdmin(@AuthenticationPrincipal UserDetails userDetails,
-                                                                      @Valid @RequestBody UserIdPayload userIdPayload,
+                                                                      @PathVariable("id") Integer id,
                                                                       BindingResult bindingResult) throws BindException {
 
         if (bindingResult.hasErrors()) {
@@ -76,7 +69,7 @@ public class QRCodeRestController {
             throw new BindException(bindingResult);
         }
 
-        Optional<User> mayBeUser = userRepository.findById(userIdPayload.id());
+        Optional<User> mayBeUser = userRepository.findById(id);
 
         if (mayBeUser.isEmpty()) {
             throw new CustomException(this.messageSource.getMessage(

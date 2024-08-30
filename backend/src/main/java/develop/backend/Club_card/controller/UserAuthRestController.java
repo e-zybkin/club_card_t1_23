@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.AbstractMap;
 import java.util.Map;
 
-@Tag(name = "user_auth_endpoints")
+@Tag(name = "Контроллер аутентификации")
 @RestController
 @RequestMapping("/club-card/api/auth")
 @RequiredArgsConstructor
