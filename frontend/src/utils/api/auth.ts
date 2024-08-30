@@ -15,7 +15,7 @@ const getJson = (response) => {
     return response.json();
   }
   return response.json().then((err) => {
-    throw new Error(err.message);
+    throw new Error(err.errors[0]);
   });
 };
 
