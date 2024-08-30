@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -117,7 +118,7 @@ public class UserRestController {
         log.info("Entered make deletion request for current user controller method");
         userService.makeDeletionRequest(userDetails);
         log.info("Completed making deletion request for current user controller method");
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>("Заявка на удаление отправлена успешно", HttpStatus.OK);
     }
 
 }

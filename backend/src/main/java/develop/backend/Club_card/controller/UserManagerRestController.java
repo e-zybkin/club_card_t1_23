@@ -186,6 +186,6 @@ public class UserManagerRestController {
         log.info("Entered delete user manager controller method");
         managerService.deleteUser(id, userDetails);
         log.info("Delete user success");
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body("Пользователь был успешно удален");
     }
 }

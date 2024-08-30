@@ -134,7 +134,7 @@ public class CardRestController {
 
         log.info("BlockCard controller finished successfully");
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(card, HttpStatus.OK);
     }
 
     @Operation(
@@ -164,7 +164,7 @@ public class CardRestController {
 
         log.info("UnblockCard controller finished successfully");
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(card, HttpStatus.OK);
     }
 
 }
