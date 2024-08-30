@@ -162,7 +162,6 @@ function App() {
       .updUserData(userData)
       .then((result) => {
         setCurrentUser(result);
-
         setIsPopupEditUserOpen(false);
       })
       .catch((err) => {
@@ -290,6 +289,7 @@ function App() {
           .getCardInfo()
           .then((result) => {
             setCardData(result);
+            closeAllPopups();
           })
           .catch((err) => {
             console.log(err);

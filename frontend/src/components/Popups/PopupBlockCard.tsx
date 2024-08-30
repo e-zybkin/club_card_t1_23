@@ -14,6 +14,7 @@ export function PopupBlockCard({ visible, onClose, onBlockCard }: Props) {
       visible={visible}
       onHide={onClose}
       blockScroll
+      draggable={false}
     >
       <p>Вы уверены, что хотите заблокировать карту?</p>
       <Button type="button" label="Заблокировать" onClick={onBlockCard} />
