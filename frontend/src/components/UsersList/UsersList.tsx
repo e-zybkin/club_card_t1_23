@@ -8,26 +8,28 @@ import { Button } from "primereact/button";
 import { User } from "../../utils/interfaces";
 
 import { FormChangeRole } from "../Forms/FormChangeRole";
+import { FormChangePrivelege } from "../Forms/FormChangePrivelege";
+import { UserRoles, UserPrivileges } from "../../utils/enums";
 
 interface props {
   users: User[];
   getAllUsers: () => void;
-  onChangeRole: () => void;
-  onChangePrivelege: () => void;
-  onDeleteUser: () => void;
+  onChangeRole: (id: number, newRole: UserRoles) => void;
+  onChangePrivilege: (id: number, newPrivilege: UserPrivileges) => void;
+  onDeleteUser: (user: User) => void;
 }
 
 export function UsersList({
   users,
   getAllUsers,
   onChangeRole,
-  onChangePrivelege,
+  onChangePrivilege,
   onDeleteUser,
 }: props) {
   const userContext = useContext(CurrentUserContext);
   const currentUser = userContext?.currentUser;
 
-  const handleDeleteUserClick = (user) => onDeleteUser(user);
+  const handleDeleteUserClick = (user: User) => onDeleteUser(user);
 
   useEffect(() => {
     getAllUsers();
@@ -35,6 +37,12 @@ export function UsersList({
 
   return (
     <div>
+      {users.length === 0 && (
+        <h3 className={styles.title}>
+          Пока что нет зарегистрированных пользователей.
+        </h3>
+      )}
+
       <Accordion multiple>
         {users.map((user) => {
           return (
@@ -51,8 +59,23 @@ export function UsersList({
               <div className={styles.user}>
                 <p>{user.email}</p>
                 <div className={styles.btnBlock}>
-                  {currentUser.role === "super" && (
-                    <FormChangeRole user={user} onChangeRole={onChangeRole} />
+                  {currentUser?.role === UserRoles.owner && (
+                    <div>
+                      <FormChangeRole user={user} onChangeRole={onChangeRole} />
+                      <FormChangePrivelege
+                        user={user}
+                        onChangePrivilege={onChangePrivilege}
+                      />
+                    </div>
+                  )}
+
+                  {currentUser?.role === UserRoles.manager && (
+                    <div>
+                      <FormChangePrivelege
+                        user={user}
+                        onChangePrivilege={onChangePrivilege}
+                      />
+                    </div>
                   )}
 
                   <Button

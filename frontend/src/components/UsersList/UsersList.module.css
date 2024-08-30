@@ -1,0 +1,16 @@
+.user {
+  display: flex;
+  justify-content: space-between;
+}
+
+.btnBlock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.title {
+  margin: 20px 0 0;
+  text-align: center;
+}
