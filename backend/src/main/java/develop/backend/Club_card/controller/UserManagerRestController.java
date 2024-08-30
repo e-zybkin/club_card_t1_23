@@ -3,6 +3,7 @@ package develop.backend.Club_card.controller;
 import develop.backend.Club_card.controller.payload.user.GetUserPayload;
 import develop.backend.Club_card.controller.payload.user.UserUpdatePrivilegePayload;
 import develop.backend.Club_card.controller.payload.user.UserUpdateRolePayload;
+import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.service.ManagerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,6 +29,7 @@ import java.util.Map;
 @RequestMapping("/club-card/api/manager")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "http://10.4.56.74")
 public class UserManagerRestController {
 
     private final ManagerService managerService;
@@ -135,7 +137,7 @@ public class UserManagerRestController {
     })
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @GetMapping("get/users")
-    public List<GetUserPayload> findAllUsers(@AuthenticationPrincipal UserDetails userDetails) {
+    public List<User> findAllUsers(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("Entered get all users manager controller method");
         return this.managerService.findAllUsers(userDetails);
     }

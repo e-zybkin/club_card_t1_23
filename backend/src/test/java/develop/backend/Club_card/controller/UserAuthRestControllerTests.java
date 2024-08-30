@@ -33,12 +33,12 @@ public class UserAuthRestControllerTests {
                                 "firstName": "Иван",
                                 "lastName": "Иванов",
                                 "middleName": "Иванович",
-                                "email": "ivanov@gmail.com",
+                                "email": "example@gmail.com",
                                 "password": "123456"
                             }
                         """))
                 .andExpect(status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("example@gmail.com"));
     }
 
     @Test
@@ -68,7 +68,7 @@ public class UserAuthRestControllerTests {
                                 "firstName": "Иван",
                                 "lastName": "Иванов",
                                 "middleName": "Иванович",
-                                "email": "ivanov@gmail.com",
+                                "email": "example@gmail.com",
                                 "password": "123456"
                             }
                         """))
@@ -82,12 +82,12 @@ public class UserAuthRestControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("""
                     {
-                        "email": "ivanov@gmail.com",
+                        "email": "example@gmail.com",
                         "password": "123456"
                     }
                 """))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("example@gmail.com"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Иван"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Иванов"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.middleName").value("Иванович"));

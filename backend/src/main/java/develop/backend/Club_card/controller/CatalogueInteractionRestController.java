@@ -6,6 +6,8 @@ import develop.backend.Club_card.controller.payload.currency.DepositRequestPaylo
 import develop.backend.Club_card.controller.payload.currency.WithDrawRequestPayload;
 import develop.backend.Club_card.entity.User;
 import develop.backend.Club_card.service.CurrencyInteractionService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,15 +20,22 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
+@Tag(name = "catalogue_interaction_rest_controller")
 @RestController
-@RequestMapping("/club-card/api/catalogue")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "http://10.4.56.74")
+@RequestMapping("/club-card/api/catalogue")
 public class CatalogueInteractionRestController {
 
     private final CurrencyInteractionRestClient currencyInteractionRestClient;
     private final CurrencyInteractionService currencyInteractionService;
 
+    @Operation(
+        summary = "Отправка пользователем продуктового каталога запроса на покупку продукта",
+        description = "В теле запроса необходимо передать цену товара. " +
+                "В Authorization хэдере необходим JWT-токен"
+    )
     @PostMapping("/buy")
     public ResponseEntity<?> buyProduct(
             @Valid @RequestBody MoneyAmountPayload moneyAmountPayload,
@@ -63,6 +72,12 @@ public class CatalogueInteractionRestController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(
+            summary = "Возврат денег на валютный сервис",
+            description = "В теле запроса необходимо передать количество возвращаемых денег. " +
+                    "В качестве параметра запроса передаётся id пользователя. " +
+                    "В Authorization хэдере необходим JWT-токен."
+    )
     @PostMapping("/return/{id:\\d+}")
     public ResponseEntity<?> returnProduct(
             @PathVariable("id") Integer userId,
@@ -96,6 +111,10 @@ public class CatalogueInteractionRestController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(
+            summary = "Получение данных о финансах пользователя сервиса внутренней валюты",
+            description = "В Authorization хэдере необходим JWT-токен."
+    )
     @GetMapping("/money/info")
     public ResponseEntity<?> getCurrencyServiceUserInfo(@AuthenticationPrincipal UserDetails userDetails) {
         log.info("Entered get user money info from currency service product catalogue service interaction controller method");
