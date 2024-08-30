@@ -7,6 +7,8 @@ import develop.backend.Club_card.repository.CardRepository;
 import develop.backend.Club_card.service.impl.CardServiceImpl;
 import develop.backend.Club_card.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +70,15 @@ public class CardRestController {
         return new ResponseEntity<>(card, HttpStatus.OK);
     }
 
+    @Operation(
+        summary = "Блокировка карты",
+        description =
+            "Выполняет блокировку карты."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Карта успешно заблокирована"),
+        @ApiResponse(responseCode = "422", description = "Невозможно выполнить операцию. Карта уже заблокирована"),
+    })
     @PatchMapping("block")
     public ResponseEntity<?> blockCard(
         @AuthenticationPrincipal UserDetails userDetails
@@ -76,7 +87,7 @@ public class CardRestController {
         if(card.getIsBlocked())
             throw new CustomException(this.messageSource.getMessage(
                 "card.error.block.already.done", null, Locale.getDefault()
-            ), HttpStatus.BAD_REQUEST);
+            ), HttpStatus.UNPROCESSABLE_ENTITY);
 
         card.setIsBlocked(true);
         cardRepository.save(card);
