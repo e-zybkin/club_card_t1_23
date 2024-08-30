@@ -37,6 +37,8 @@ public class CardServiceImpl implements CardService {
     public Card createCard(UserDetails userDetails,
                            CreationCardPayload creationCardPayload) {
 
+        log.info("Entered createCard service method");
+
         User user = userRepository.findUserByEmail(userDetails.getUsername())
             .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
                 "security.auth.errors.username.not.found", null, Locale.getDefault()
@@ -76,6 +78,8 @@ public class CardServiceImpl implements CardService {
 
         user.setCard(card);
         userRepository.save(user);
+
+        log.info("Creating card service finished successfully");
 
     return card;
 
