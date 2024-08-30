@@ -20,7 +20,7 @@ public class EmailServiceImpl {
         String message = "Перейдите по ссылке для подтверждения регистрации: " + confirmationUrl;
 
         SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom("email");
+        email.setFrom("miroshnickovdmitrij@yandex.ru");
         email.setTo(recipientAddress);
         email.setSubject(subject);
         email.setText(message);

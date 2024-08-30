@@ -41,7 +41,7 @@ public class CatalogueRestController {
         BigDecimal restAmount;
 
         try{
-            restAmount = currencyInteractionRestClient.getUserBalanceFromCurrencyService(String.valueOf(getMoneyPayload));
+            restAmount = currencyInteractionRestClient.getUserBalanceFromCurrencyService(getMoneyPayload.email(), getMoneyPayload.count());
         } catch (CustomException ex) {
             throw new CustomException(ex.getMessage(), ex.getHttpStatus());
         }
