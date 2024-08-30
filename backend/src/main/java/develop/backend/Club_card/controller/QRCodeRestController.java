@@ -7,7 +7,6 @@ import develop.backend.Club_card.service.QRCodeService;
 import develop.backend.Club_card.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -63,8 +62,7 @@ public class QRCodeRestController {
     )
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
     @PostMapping("generate/{id:\\d+}")
-    public ResponseEntity<Map<String, String>> generateQRCodeForAdmin(@AuthenticationPrincipal UserDetails userDetails,
-                                                                      @PathVariable("id") Integer id,
+    public ResponseEntity<Map<String, String>> generateQRCodeForAdmin(@PathVariable("id") Integer id,
                                                                       BindingResult bindingResult) throws BindException {
 
         log.info("Entered generate qr code from user data qr code controller method");
@@ -89,6 +87,6 @@ public class QRCodeRestController {
 
         log.info("Completed generate qr code from user data qr code controller method");
 
-       return QRCodeService.encodeQR(user);
+        return QRCodeService.encodeQR(user);
     }
 }
