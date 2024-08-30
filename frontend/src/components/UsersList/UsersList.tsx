@@ -1,5 +1,4 @@
 import { useContext, useEffect } from "react";
-import styles from "./UsersList.module.css";
 import { CurrentUserContext } from "../../contexts/CurrentUserContext";
 
 import { Accordion, AccordionTab } from "primereact/accordion";
@@ -10,6 +9,7 @@ import { User } from "../../utils/interfaces";
 import { FormChangeRole } from "../Forms/FormChangeRole";
 import { FormChangePrivelege } from "../Forms/FormChangePrivelege";
 import { UserRoles, UserPrivileges } from "../../utils/enums";
+import styles from "./UsersList.module.css";
 
 interface props {
   users: User[];
@@ -57,15 +57,16 @@ export function UsersList({
               }
             >
               <div className={styles.user}>
-                <p>{user.email}</p>
+                <p className={styles.email}>{user.email}</p>
                 <div className={styles.btnBlock}>
                   {currentUser?.role === UserRoles.owner && (
-                    <div>
+                    <div className={styles.formBox}>
                       <FormChangeRole user={user} onChangeRole={onChangeRole} />
                       <FormChangePrivelege
                         user={user}
                         onChangePrivilege={onChangePrivilege}
                       />
+                      {/* {user. && <Button />} */}
                     </div>
                   )}
 
@@ -75,6 +76,7 @@ export function UsersList({
                         user={user}
                         onChangePrivilege={onChangePrivilege}
                       />
+                      {/* <Button /> */}
                     </div>
                   )}
 

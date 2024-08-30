@@ -38,6 +38,7 @@ import {
   UserRoles,
 } from "../../utils/enums";
 import { PopupQR } from "../Popups/PopupQR";
+import { PopupBlockCard } from "../Popups/PopupBlockCard";
 
 function App() {
   const [currentUser, setCurrentUser] = useState<
@@ -58,6 +59,8 @@ function App() {
     useState<boolean>(false);
   const [isPopupQrOpen, setIsQrPopupOpen] = useState<boolean>(false);
   const [isPopupDeleteUserOpen, setIsPopupDeleteUserOpen] =
+    useState<boolean>(false);
+  const [isBlockCardPopupOpen, setIsBlockCardPopupOpen] =
     useState<boolean>(false);
 
   const [showMessage, setShowMessage] = useState(false);
@@ -159,7 +162,6 @@ function App() {
       .updUserData(userData)
       .then((result) => {
         setCurrentUser(result);
-
         setIsPopupEditUserOpen(false);
       })
       .catch((err) => {
@@ -278,12 +280,36 @@ function App() {
     navigate("/signin");
   };
 
+  const blockCard = (): void => {
+    setIsLoading(true);
+    cardApi
+      .blockCard()
+      .then(() => {
+        cardApi
+          .getCardInfo()
+          .then((result) => {
+            setCardData(result);
+            closeAllPopups();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        showDialog(err.message, true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   const closeAllPopups = (): void => {
     setIsPopupEditUserOpen(false);
     setIsPopupCreateCardOpen(false);
     setShowMessage(false);
     setIsQrPopupOpen(false);
     setIsPopupDeleteUserOpen(false);
+    setIsBlockCardPopupOpen(false);
   };
 
   return (
@@ -302,6 +328,7 @@ function App() {
                       card={cardData}
                       createCard={setIsPopupCreateCardOpen}
                       openQr={setIsQrPopupOpen}
+                      blockCard={setIsBlockCardPopupOpen}
                     />
                   }
                 />
@@ -375,6 +402,12 @@ function App() {
             visible={isPopupDeleteUserOpen}
             onClose={closeAllPopups}
             onDeleteUser={handleDeleteUser}
+          />
+
+          <PopupBlockCard
+            visible={isBlockCardPopupOpen}
+            onClose={closeAllPopups}
+            onBlockCard={blockCard}
           />
         </div>
         <Loader isLoading={isLoading} />

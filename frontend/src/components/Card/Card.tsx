@@ -20,6 +20,14 @@ function Card({ card, openQr }: props) {
 
   const currentUser = userContext?.currentUser;
 
+  const date = card?.dateOfExpiration ? new Date(card.dateOfExpiration) : null;
+
+  const month = date ? date.getUTCMonth() + 1 : null;
+  const year = date ? date.getUTCFullYear().toString().slice(-2) : null;
+
+  const formattedDate =
+    month && year ? `${month.toString().padStart(2, "0")}/${year}` : "";
+
   return (
     <div className={styles.cardBox}>
       <div
@@ -34,9 +42,9 @@ function Card({ card, openQr }: props) {
           src={logo}
           alt="логотип Т1"
           className={`${
-            card?.template === CardTemplates.FULL
+            card?.pattern === CardTemplates.FULL
               ? styles["logo-first-case"]
-              : card?.template === CardTemplates.MIDDLE
+              : card?.pattern === CardTemplates.MIDDLE
               ? styles["logo-second-case"]
               : styles["logo-third-case"]
           } ${styles.logo}`}
@@ -45,13 +53,13 @@ function Card({ card, openQr }: props) {
         <p
           className={styles.initials}
         >{`${currentUser?.firstName} ${currentUser?.lastName} `}</p>
-        {card?.template === CardTemplates.FULL && (
-          <p className={styles.number}>{card?.number}</p>
+        {card?.pattern === CardTemplates.FULL && (
+          <p className={styles.number}>{Math.abs(card?.number)}</p>
         )}
-        {card?.template === CardTemplates.FULL ||
-          (card?.template === CardTemplates.MIDDLE && (
-            <p className={styles.date}>{card?.dateOfExpiration}</p>
-          ))}
+        {(card?.pattern === CardTemplates.FULL ||
+          card?.pattern === CardTemplates.MIDDLE) && (
+          <p className={styles.date}>{formattedDate}</p>
+        )}
       </div>
 
       <div

@@ -22,7 +22,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Locale;
 
@@ -30,6 +36,7 @@ import java.util.Locale;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
+@CrossOrigin(origins = "http://10.4.56.74")
 @RequestMapping("/club-card/api/card")
 public class CardRestController {
 

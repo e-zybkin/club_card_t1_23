@@ -22,9 +22,10 @@ import java.math.BigDecimal;
 
 @Tag(name = "catalogue_interaction_rest_controller")
 @RestController
-@RequestMapping("/club-card/api/catalogue")
 @RequiredArgsConstructor
 @Slf4j
+@CrossOrigin(origins = "http://10.4.56.74")
+@RequestMapping("/club-card/api/catalogue")
 public class CatalogueInteractionRestController {
 
     private final CurrencyInteractionRestClient currencyInteractionRestClient;

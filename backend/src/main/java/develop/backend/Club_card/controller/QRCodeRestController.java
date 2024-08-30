@@ -28,6 +28,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/club-card/api/qr")
 @Slf4j
+@CrossOrigin(origins = "http://10.4.56.74")
 public class QRCodeRestController {
 
     private final UserService userService;
