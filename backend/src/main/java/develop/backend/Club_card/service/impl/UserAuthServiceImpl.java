@@ -72,6 +72,8 @@ public class UserAuthServiceImpl implements UserAuthService {
                 false,
                 role,
                 privilege,
+                "",
+                false,
                 null
         ));
     }

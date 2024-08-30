@@ -1,7 +1,6 @@
 package develop.backend.Club_card.service.impl;
 
 import develop.backend.Club_card.controller.payload.user.GetUserPayload;
-import develop.backend.Club_card.controller.payload.user.UserIdPayload;
 import develop.backend.Club_card.controller.payload.user.UserUpdatePrivilegePayload;
 import develop.backend.Club_card.controller.payload.user.UserUpdateRolePayload;
 import develop.backend.Club_card.entity.enums.user.UserPrivilegesEnum;
@@ -79,8 +78,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     @Transactional
-    public void updateUserRole(UserUpdateRolePayload userUpdateRolePayload) {
-        Integer id = userUpdateRolePayload.id();
+    public void updateUserRole(Integer id, UserUpdateRolePayload userUpdateRolePayload) {
         UserRolesEnum newRole = getUserRolesEnumFromString(userUpdateRolePayload.role());
 
         userRepository.findById(id).ifPresentOrElse(
@@ -98,8 +96,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     @Transactional
-    public void updateUserPrivilege(UserUpdatePrivilegePayload userUpdatePrivilegePayload) {
-        Integer id = userUpdatePrivilegePayload.id();
+    public void updateUserPrivilege(Integer id, UserUpdatePrivilegePayload userUpdatePrivilegePayload) {
         UserPrivilegesEnum newPrivilege = getUserPrivilegeEnumFromString(userUpdatePrivilegePayload.privilege());
 
         userRepository.findById(id).ifPresentOrElse(
@@ -117,13 +114,13 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     @Transactional
-    public void deleteUser(UserIdPayload userIdPayload, UserDetails userDetails) {
+    public void deleteUser(Integer id, UserDetails userDetails) {
         User requestCaller = userRepository.findUserByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
                         "security.auth.errors.email.not.found", null, Locale.getDefault()
                 ), HttpStatus.NOT_FOUND));
 
-        User deletingUser = userRepository.findById(userIdPayload.id())
+        User deletingUser = userRepository.findById(id)
                 .orElseThrow(() -> new CustomException(this.messageSource.getMessage(
                         "delete.errors.user.not.found", null, Locale.getDefault()
                 ), HttpStatus.NOT_FOUND));
@@ -137,7 +134,7 @@ public class ManagerServiceImpl implements ManagerService {
             ), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        userRepository.deleteById(userIdPayload.id());
+        userRepository.deleteById(id);
     }
 
     private UserRolesEnum getUserRolesEnumFromString(String role) {

@@ -1,7 +1,6 @@
 package develop.backend.Club_card.controller;
 
 import develop.backend.Club_card.controller.payload.user.GetUserPayload;
-import develop.backend.Club_card.controller.payload.user.UserIdPayload;
 import develop.backend.Club_card.controller.payload.user.UserUpdatePrivilegePayload;
 import develop.backend.Club_card.controller.payload.user.UserUpdateRolePayload;
 import develop.backend.Club_card.service.ManagerService;
@@ -23,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Tag(name = "user_manager_endpoints")
+@Tag(name = "Контроллер менеджера/супер-админа")
 @RestController
 @RequestMapping("/club-card/api/manager")
 @RequiredArgsConstructor
@@ -33,10 +32,10 @@ public class UserManagerRestController {
 
     @Operation(
             summary = "Обновление роли пользователя",
-            description =
-                    "Данная ручка может быть вызвана только супер-адином (\"ROLE_OWNER\"). " +
+            description = "Данная ручка может быть вызвана только супер-адином (\"ROLE_OWNER\"). " +
                     "В Authorization хэдере необходим JWT-токен. " +
-                    "В теле указывается имя пользователя и желаемая роль с префиксом ROLE_ из entity.enums.",
+                    "В url запроса указывается id пользователя, в теле запроса - желаемая роль " +
+                    "с префиксом ROLE_ из entity.enums",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
@@ -48,9 +47,10 @@ public class UserManagerRestController {
             @ApiResponse(responseCode = "500", description = "Недействительный JWT-токен")
     })
     @PreAuthorize("hasRole('OWNER')")
-    @PatchMapping("update/role")
+    @PatchMapping("update/role/{id:\\d+}")
     public ResponseEntity<?> updateUserRole(
             @Valid @RequestBody UserUpdateRolePayload userUpdateRolePayload,
+            @PathVariable("id") Integer id,
             BindingResult bindingResult
     ) throws BindException {
 
@@ -62,7 +62,7 @@ public class UserManagerRestController {
             throw new BindException(bindingResult);
         }
 
-        managerService.updateUserRole(userUpdateRolePayload);
+        managerService.updateUserRole(id, userUpdateRolePayload);
         return ResponseEntity.ok().body(Map.of(
                 "role", userUpdateRolePayload.role()
         ));
@@ -71,9 +71,9 @@ public class UserManagerRestController {
     @Operation(
             summary = "Обновление уровня привилегий пользователя",
             description =
-                    "Данная ручка может быть вызвана только супер-адином (\"ROLE_OWNER\"). " +
+                    "Данная ручка может быть вызвана супер-адином (\"ROLE_OWNER\") или менеджером (\"ROLE_MANAGER\"). " +
                     "В Authorization хэдере необходим JWT-токен. " +
-                    "В теле указывается имя пользователя и желаемый уровень привилегий. " +
+                    "В url запроса указывается id пользователя, в теле запроса - желаемый уровень привелегий. " +
                     " с префиксом PRIVILEGE_ из entity.enums.",
             security = @SecurityRequirement(name = "bearerAuth")
     )
@@ -86,9 +86,10 @@ public class UserManagerRestController {
             @ApiResponse(responseCode = "500", description = "Недействительный JWT-токен")
     })
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
-    @PatchMapping("update/privilege")
+    @PatchMapping("update/privilege/{id:\\d+}")
     public ResponseEntity<?> updateUserPrivilege(
             @Valid @RequestBody UserUpdatePrivilegePayload userUpdatePrivilegePayload,
+            @PathVariable("id") Integer id,
             BindingResult bindingResult
     ) throws BindException {
 
@@ -100,7 +101,7 @@ public class UserManagerRestController {
             throw new BindException(bindingResult);
         }
 
-        managerService.updateUserPrivilege(userUpdatePrivilegePayload);
+        managerService.updateUserPrivilege(id, userUpdatePrivilegePayload);
         return ResponseEntity.ok().body(Map.of(
                 "privilege", userUpdatePrivilegePayload.privilege()
         ));
@@ -147,11 +148,11 @@ public class UserManagerRestController {
 
     @Operation(
             summary = "Удаление пользователя из основной таблицы",
-            description =
-                    "Удаляет данные пользователя. " +
+            description = "Удаляет данные пользователя. " +
                     "Данная ручка может быть вызвана супер-админом (\"ROLE_OWNER\") или менеджером (\"ROLE_OWNER\"). " +
                     "В Authorization хэдере необходим JWT-токен. " +
-                    "В случае успеха возвращает JSON с данными для добавления пользователя в архив.",
+                    "В случае успеха возвращает JSON с данными для добавления пользователя в архив. " +
+                    "В url указывается id удаляемого пользователя",
             security = @SecurityRequirement(name = "bearerAuth")
     )
     @ApiResponses(value = {
@@ -163,22 +164,12 @@ public class UserManagerRestController {
             @ApiResponse(responseCode = "500", description = "Недействительный JWT-токен")
     })
     @PreAuthorize("hasRole('OWNER') or hasRole('MANAGER')")
-    @DeleteMapping("delete/user")
+    @DeleteMapping("delete/user/{id:\\d+}")
     public ResponseEntity<?> deleteUserFromUserTable(
             @AuthenticationPrincipal UserDetails userDetails,
-            @Valid @RequestBody UserIdPayload userIdPayload,
-            BindingResult bindingResult
-    ) throws BindException {
-
-        if (bindingResult.hasErrors()) {
-            if (bindingResult instanceof BindException exception) {
-                throw exception;
-            }
-
-            throw new BindException(bindingResult);
-        }
-
-        managerService.deleteUser(userIdPayload, userDetails);
+            @PathVariable("id") Integer id
+    ) {
+        managerService.deleteUser(id, userDetails);
         return ResponseEntity.ok().build();
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -88,7 +87,10 @@ public class UserAuthRestControllerTests {
                     }
                 """))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("ivanov@gmail.com"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Иван"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Иванов"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.middleName").value("Иванович"));
     }
 
 }

@@ -2,23 +2,31 @@ package develop.backend.Club_card.controller;
 
 import develop.backend.Club_card.controller.payload.card.CreationCardPayload;
 import develop.backend.Club_card.entity.Card;
+import develop.backend.Club_card.exception.CustomException;
 import develop.backend.Club_card.repository.CardRepository;
-import develop.backend.Club_card.repository.UserRepository;
 import develop.backend.Club_card.service.impl.CardServiceImpl;
 import develop.backend.Club_card.service.impl.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Locale;
+
+@Tag(name = "Контроллер для взаимодействия с картой")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/club-card/api/card")
@@ -26,6 +34,8 @@ public class CardRestController {
 
     private final CardServiceImpl cardService;
     private final UserServiceImpl userService;
+    private final CardRepository cardRepository;
+    private final MessageSource messageSource;
 
     @Operation(
         summary = "Создание карты",
@@ -58,6 +68,30 @@ public class CardRestController {
         Card card = userService.getCurrentUser(userDetails).getCard();
 
         return new ResponseEntity<>(card, HttpStatus.OK);
+    }
+
+    @Operation(
+        summary = "Блокировка карты",
+        description =
+            "Выполняет блокировку карты."
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Карта успешно заблокирована"),
+        @ApiResponse(responseCode = "422", description = "Невозможно выполнить операцию. Карта уже заблокирована"),
+    })
+    @PatchMapping("block")
+    public ResponseEntity<?> blockCard(
+        @AuthenticationPrincipal UserDetails userDetails
+    ){
+        Card card = userService.getCurrentUser(userDetails).getCard();
+        if(card.getIsBlocked())
+            throw new CustomException(this.messageSource.getMessage(
+                "card.error.block.already.done", null, Locale.getDefault()
+            ), HttpStatus.UNPROCESSABLE_ENTITY);
+
+        card.setIsBlocked(true);
+        cardRepository.save(card);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

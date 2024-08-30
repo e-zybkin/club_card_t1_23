@@ -18,7 +18,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "user_endpoints")
+@Tag(name = "Контроллер пользователя")
 @RestController
 @RequestMapping("/club-card/api/users")
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class UserRestController {
     private final UserService userService;
 
     @Operation(
-            summary = "Получение данный текущего пользователя",
+            summary = "Получение данных текущего пользователя",
             description =
                     "В случае успеха - возвращает JSON с данными текущего пользователя. " +
                     "В Authorization хэдере необходим JWT-токен",
@@ -57,7 +57,7 @@ public class UserRestController {
     @Operation(
             summary = "Обновление данных текущего пользователя",
             description =
-                    "В теле принимает ФИО, дату рождения, имя пользователя, email. " +
+                    "В теле принимает ФИО, дату рождения, email. " +
                     "В Authorization хэдере необходим JWT-токен",
             security = @SecurityRequirement(name = "bearerAuth")
     )
