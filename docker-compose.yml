@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend  # Путь к директории с Dockerfile для бэкенда
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev  # Пример переменной окружения для бэкенда
+
+  frontend:
+    build:
+      context: ./frontend  # Путь к директории с Dockerfile для фронтенда
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    environment:
+      - NODE_ENV=development
